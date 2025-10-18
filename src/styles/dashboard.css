@@ -1,0 +1,79 @@
+:root {
+  --dk-blue: #004A99;
+  --light-bg: #f0f2f5;
+  --sidebar-bg: #29293d;
+  --card-bg: #ffffff;
+  --border-radius-card: 16px;
+  --border-radius-panel: 20px;
+}
+
+.dashboard-container {
+  display: flex;
+  height: 100vh;
+  overflow: hidden; 
+  background-color: var(--light-bg);
+}
+
+.sidebar {
+  position: fixed; 
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 260px;
+  background-color: var(--sidebar-bg);
+  padding: 24px 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  z-index: 10;
+}
+
+.sidebar-header {
+  color: #ffffff;
+  font-weight: bold;
+  font-size: 1.8em;
+}
+
+.menu {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 20px;
+}
+
+.menu-item {
+  background-color: var(--card-bg);
+  border-radius: var(--border-radius-card);
+  padding: 14px;
+  color: #333;
+  font-weight: 500;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.menu-item:hover {
+  transform: translateY(-2px);
+}
+
+.menu-item.active {
+  background-color: var(--dk-blue);
+  color: #fff;
+}
+
+.logout {
+  background-color: var(--dk-blue);
+  color: white;
+  font-weight: bold;
+}
+
+.main-content {
+  margin-left: 260px; 
+  flex-grow: 1;
+  height: 100vh;
+  overflow-y: auto; 
+  padding: 40px;
+  background-color: var(--light-bg);
+}

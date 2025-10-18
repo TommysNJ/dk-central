@@ -1,0 +1,183 @@
+/* =====================================================
+   🎨 ESTILOS GLOBALES DK MANAGEMENT
+   Base para toda la app (login, formularios, etc.)
+   ===================================================== */
+
+:root {
+  /* Paleta principal */
+  --dk-blue: #004A99;
+  --dk-dark: #1e293b;
+  --dk-light: #f0f2f5;
+  --card-bg: #ffffff;
+
+  /* Sombra y radio */
+  --radius-card: 16px;
+  --radius-panel: 20px;
+  --shadow-soft: 0 4px 8px rgba(0, 0, 0, 0.08);
+  --shadow-panel: 0 6px 12px rgba(0, 0, 0, 0.1);
+
+  --font-main: 'Segoe UI', system-ui, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+  font-family: var(--font-main);
+  background-color: var(--dk-light);
+  color: #0f172a;
+}
+
+/* =====================================================
+   🧩 LOGIN
+   ===================================================== */
+.login-wrap {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 100vh;
+}
+
+.login-left {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #fff;
+  backdrop-filter: blur(4px);
+}
+
+.login-right {
+  background: var(--dk-blue);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.login-form {
+  width: 340px;
+  background: white;
+  padding: 32px;
+  border-radius: var(--radius-panel);
+  box-shadow: var(--shadow-panel);
+}
+
+.login-title {
+  font-weight: 700;
+  font-size: 28px;
+  color: var(--dk-blue);
+  margin-bottom: 22px;
+  text-align: left;
+}
+
+.label {
+  font-size: 13px;
+  color: #334155;
+  margin: 12px 0 6px;
+  display: block;
+}
+
+.input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  background: #f8fafc;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--dk-blue);
+  box-shadow: 0 0 0 2px rgba(0, 74, 153, 0.1);
+}
+
+.btn-primary {
+  width: 100%;
+  padding: 12px 14px;
+  background: var(--dk-blue);
+  color: #fff;
+  border: none;
+  border-radius: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-primary:hover {
+  background-color: #0056b3;
+  transform: translateY(-1px);
+}
+
+/* =====================================================
+   🧱 ELEMENTOS REUTILIZABLES (Cards, tablas, etc.)
+   ===================================================== */
+
+.card {
+  background-color: var(--card-bg);
+  border-radius: var(--radius-panel);
+  box-shadow: var(--shadow-panel);
+  padding: 24px;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th,
+.table td {
+  padding: 10px 14px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.table th {
+  background-color: #f8f8f8;
+  color: #333;
+  text-align: left;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+.badge {
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: #e2e8f0;
+  font-size: 12px;
+}
+
+/* =====================================================
+   ⚡ ANIMACIONES SUAVES
+   ===================================================== */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in {
+  animation: fadeIn 0.25s ease forwards;
+}
+
+/* =====================================================
+   🧾 SCROLL PERSONALIZADO
+   ===================================================== */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.25);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(0, 0, 0, 0.4);
+}
