@@ -2,9 +2,12 @@
 CREATE TABLE `centros_comerciales` (
     `id_centro_comercial` INTEGER NOT NULL AUTO_INCREMENT,
     `nombre` VARCHAR(191) NOT NULL,
-    `direccion` VARCHAR(191) NULL,
+    `ciudad` VARCHAR(191) NOT NULL,
+    `ubicacion` VARCHAR(191) NULL,
+    `id_grupo_telegram` VARCHAR(191) NOT NULL,
 
     UNIQUE INDEX `centros_comerciales_nombre_key`(`nombre`),
+    UNIQUE INDEX `centros_comerciales_id_grupo_telegram_key`(`id_grupo_telegram`),
     PRIMARY KEY (`id_centro_comercial`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 

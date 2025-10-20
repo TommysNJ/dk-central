@@ -49,7 +49,9 @@ export default function DashboardLayout({ children }) {
             )}
 
             {rol === "admin_sistema" && (
-              <Link href="#" className="menu-item">Gestión Centros Comerciales</Link>
+              <Link href="/dashboard/centros-comerciales"  className={`menu-item ${isActive("/dashboard/centros-comerciales")}`}>
+                Gestión Centros Comerciales
+              </Link>
             )}
           </div>
         </div>

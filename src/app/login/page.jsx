@@ -49,7 +49,7 @@ export default function LoginPage() {
       </div>
       <div className="login-right">
         {/* Logo (usa tu imagen) */}
-        <Image src="/logo-dk.png" alt="DK" width={300} height={300} />
+        <Image src="/logo.jpg" alt="DK" width={300} height={300} />
       </div>
     </div>
   );
