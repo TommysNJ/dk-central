@@ -268,6 +268,26 @@ function UserModal({ onSaved, rolActual }) {
       const data = await res.json();
       const msg = data.message || "Error";
 
+      // 🔹 Si el backend dice "Campos obligatorios faltantes", solo pinta los campos vacíos
+      if (msg.includes("faltantes")) {
+        const emptyFields = {};
+        if (!payload.nombre) emptyFields.nombre = true;
+        if (!payload.correo) emptyFields.correo = true;
+        if (!payload.telefono) emptyFields.telefono = true;
+        if (!payload.usuario) emptyFields.usuario = true;
+        if (!editing && !payload.password) emptyFields.password = true;
+        if (!payload.area && payload.rol === "usuario_operativo") emptyFields.area = true;
+        if (
+          !payload.nombre_centro_comercial &&
+          rolActual === "admin_sistema" &&
+          (payload.rol === "admin_centro" || payload.rol === "usuario_operativo")
+        ) {
+          emptyFields.nombre_centro_comercial = true;
+        }
+        setErrors({ ...emptyFields, general: msg });
+        return;
+      }
+
       if (msg.includes("correo")) setErrors({ correo: msg });
       else if (msg.includes("teléfono")) setErrors({ telefono: msg });
       else if (msg.includes("centro"))
@@ -311,7 +331,7 @@ function UserModal({ onSaved, rolActual }) {
 
           <label className="label">Nombre</label>
           <input
-            className="input"
+            className={`input ${errors.nombre ? "input-error" : ""}`}
             type="text"
             placeholder="Ingresa nombre completo"
             value={form.nombre}
@@ -320,7 +340,7 @@ function UserModal({ onSaved, rolActual }) {
 
           <label className="label">Correo</label>
           <input
-            className="input"
+            className={`input ${errors.correo ? "input-error" : ""}`}
             type="email"
             placeholder="ejemplo@correo.com"
             value={form.correo}
@@ -330,7 +350,7 @@ function UserModal({ onSaved, rolActual }) {
 
           <label className="label">Teléfono</label>
           <input
-            className="input"
+            className={`input ${errors.telefono ? "input-error" : ""}`}
             type="tel"
             placeholder="0999999999"
             maxLength="10"
@@ -346,7 +366,7 @@ function UserModal({ onSaved, rolActual }) {
             <>
               <label className="label">Centro Comercial</label>
               <select
-                className="input"
+                className={`input ${errors.nombre_centro_comercial ? "input-error" : ""}`}
                 value={form.nombre_centro_comercial}
                 disabled={isCentroDisabled}
                 onChange={(e) =>
@@ -368,7 +388,7 @@ function UserModal({ onSaved, rolActual }) {
 
           <label className="label">Área</label>
           <select
-            className="input"
+            className={`input ${errors.area ? "input-error" : ""}`}
             value={form.area}
             onChange={(e) => setForm({ ...form, area: e.target.value })}
             disabled={isAreaDisabled}
@@ -383,7 +403,7 @@ function UserModal({ onSaved, rolActual }) {
 
           <label className="label">Usuario</label>
           <input
-            className="input"
+            className={`input ${errors.usuario ? "input-error" : ""}`}
             type="text"
             placeholder="Nombre de usuario"
             value={form.usuario}

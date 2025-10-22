@@ -197,6 +197,16 @@ function CentroModal({ onSaved }) {
       const data = await res.json();
       const msg = data.message || "Error";
 
+      // 🔹 Si el backend devuelve "Campos obligatorios faltantes"
+      if (msg.includes("faltantes")) {
+        const emptyFields = {};
+        if (!payload.nombre) emptyFields.nombre = true;
+        if (!payload.ciudad) emptyFields.ciudad = true;
+        if (!payload.id_grupo_telegram) emptyFields.id_grupo_telegram = true;
+        setErrors({ ...emptyFields, general: msg });
+        return;
+      }
+
       if (msg.includes("nombre")) setErrors({ nombre: msg });
       else if (msg.includes("ciudad")) setErrors({ ciudad: msg });
       else if (msg.includes("grupo") || msg.includes("ID del grupo"))
@@ -225,7 +235,7 @@ function CentroModal({ onSaved }) {
 
           <label className="label">Nombre</label>
           <input
-            className="input"
+            className={`input ${errors.nombre ? "input-error" : ""}`}
             type="text"
             placeholder="Nombre del centro comercial"
             value={form.nombre}
@@ -235,7 +245,7 @@ function CentroModal({ onSaved }) {
 
           <label className="label">Ciudad</label>
           <input
-            className="input"
+            className={`input ${errors.ciudad ? "input-error" : ""}`}
             type="text"
             placeholder="Ciudad"
             value={form.ciudad}
@@ -254,7 +264,7 @@ function CentroModal({ onSaved }) {
 
           <label className="label">ID Grupo Telegram</label>
           <input
-            className="input"
+            className={`input ${errors.id_grupo_telegram ? "input-error" : ""}`}
             type="text"
             placeholder="Ejemplo: -1001234567890"
             value={form.id_grupo_telegram}
