@@ -55,13 +55,15 @@ model usuarios {
 /// Tabla: mensajes_limpios
 model mensajes_limpios {
   id_mensaje             Int                   @id @default(autoincrement()) @map("id_mensaje")
+  id_mensaje_telegram    Int                   @map("id_mensaje_telegram") 
   id_centro_comercial    Int                   @map("id_centro_comercial")
   centro_comercial       centros_comerciales   @relation(fields: [id_centro_comercial], references: [id_centro_comercial])
-  contenido_original     String                @map("contenido_original")
-  contenido_limpio       String                @map("contenido_limpio")
+  contenido_original     String              @db.Text @map("contenido_original")  
+  contenido_limpio       String              @db.Text @map("contenido_limpio")    
   remitente              String?               @map("remitente")
   fecha_envio            DateTime              @map("fecha_envio")
   procesado              Boolean               @default(false) @map("procesado")
 
+  @@unique([id_centro_comercial, id_mensaje_telegram], map: "unique_msg_per_centro")
   @@map("mensajes_limpios")
 }
