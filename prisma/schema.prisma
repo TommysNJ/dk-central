@@ -29,6 +29,7 @@ model centros_comerciales {
   ubicacion            String?   @map("ubicacion")
   id_grupo_telegram    String    @unique @map("id_grupo_telegram")
   usuarios             usuarios[]
+  mensajes_limpios     mensajes_limpios[]
 
   @@map("centros_comerciales")
 }
@@ -46,8 +47,23 @@ model usuarios {
   id_centro_comercial Int?     @map("id_centro_comercial")
   centro_comercial    centros_comerciales? @relation(fields: [id_centro_comercial], references: [id_centro_comercial])
 
-
   @@index([rol, id_centro_comercial], map: "idx_usuarios_rol_centro")
   @@index([usuario], map: "idx_usuarios_usuario")
   @@map("usuarios")
+}
+
+/// Tabla: mensajes_limpios
+model mensajes_limpios {
+  id_mensaje             Int                   @id @default(autoincrement()) @map("id_mensaje")
+  id_mensaje_telegram    Int                   @map("id_mensaje_telegram") 
+  id_centro_comercial    Int                   @map("id_centro_comercial")
+  centro_comercial       centros_comerciales   @relation(fields: [id_centro_comercial], references: [id_centro_comercial])
+  contenido_original     String              @db.Text @map("contenido_original")  
+  contenido_limpio       String              @db.Text @map("contenido_limpio")    
+  remitente              String?               @map("remitente")
+  fecha_envio            DateTime              @map("fecha_envio")
+  procesado              Boolean               @default(false) @map("procesado")
+
+  @@unique([id_centro_comercial, id_mensaje_telegram], map: "unique_msg_per_centro")
+  @@map("mensajes_limpios")
 }

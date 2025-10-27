@@ -1,0 +1,5 @@
+telethon
+emoji
+aiohttp
+requests
+python-dotenv
