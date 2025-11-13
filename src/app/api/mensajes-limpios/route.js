@@ -1,11 +1,8 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
-// Misma clave que usa el microservicio Python
+// 🔐 Misma clave que usa el microservicio Python
 const BOT_API_KEY = process.env.BOT_API_KEY || "CLAVE_SEGURA_DE_AUTENTICACION";
-
-// Contador global de duplicados (solo para logging, no persistente)
-let mensajesDuplicadosCount = 0;
 
 export async function POST(req) {
   const apiKey = req.headers.get("x-api-key");
@@ -18,14 +15,14 @@ export async function POST(req) {
     const body = await req.json();
     const {
       id_centro_comercial,
-      id_mensaje_telegram, 
+      id_mensaje_telegram, // ✅ nuevo campo
       contenido_original,
       contenido_limpio,
       remitente,
       fecha_envio,
     } = body;
 
-    // Validaciones básicas
+    // ⚠️ Validaciones básicas
     if (!id_centro_comercial || !id_mensaje_telegram || !contenido_limpio || !fecha_envio) {
       return NextResponse.json(
         { message: "Faltan campos obligatorios" },
@@ -33,7 +30,7 @@ export async function POST(req) {
       );
     }
 
-    // Verificar si el mensaje ya fue guardado
+    // 🧠 Verificar si el mensaje ya fue guardado
     const existente = await prisma.mensajes_limpios.findUnique({
       where: {
         id_centro_comercial_id_mensaje_telegram: {
@@ -44,9 +41,51 @@ export async function POST(req) {
     });
 
     if (existente) {
-      mensajesDuplicadosCount++;
+      // 🔄 Si el mensaje existe pero no está procesado, reenviarlo a clasificación
+      if (!existente.procesado) {
+        console.log(
+          `🔁 Mensaje duplicado sin procesar detectado (Centro ${id_centro_comercial}, Telegram ID ${id_mensaje_telegram}). Enviando a clasificación...`
+        );
+
+        try {
+          const baseUrl =
+            process.env.NEXT_PUBLIC_BASE_URL ||
+            process.env.INTERNAL_BASE_URL ||
+            "http://localhost:3000";
+
+          const resClasif = await fetch(`${baseUrl}/api/mensajes-clasificados/auto`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "x-api-key": BOT_API_KEY,
+            },
+            body: JSON.stringify({ id_mensaje_limpio: existente.id_mensaje }),
+          });
+
+          if (!resClasif.ok) {
+            const err = await resClasif.json().catch(() => ({}));
+            console.error(
+              "⚠️ No se pudo disparar clasificación de mensaje duplicado sin procesar:",
+              resClasif.status,
+              err?.message || ""
+            );
+          } else {
+            console.log(`✅ Clasificación lanzada para duplicado ID limpio ${existente.id_mensaje}`);
+          }
+        } catch (e) {
+          console.error("⚠️ Error reenviando mensaje duplicado sin procesar:", e);
+        }
+
+        // ✅ Retornamos respuesta informativa
+        return NextResponse.json(
+          { message: "Mensaje duplicado sin procesar reenviado a clasificación" },
+          { status: 200 }
+        );
+      }
+
+      // Si ya fue procesado (procesado = 1), lo omitimos como antes
       console.log(
-        `⚠️ Mensaje duplicado omitido (Centro ${id_centro_comercial}, Telegram ID ${id_mensaje_telegram}). Total omitidos: ${mensajesDuplicadosCount}`
+        `⚠️ Mensaje duplicado ya procesado (Centro ${id_centro_comercial}, Telegram ID ${id_mensaje_telegram})`
       );
 
       return NextResponse.json(
@@ -66,15 +105,39 @@ export async function POST(req) {
         id_mensaje_telegram: Number(id_mensaje_telegram),
         contenido_original,
         contenido_limpio,
-        remitente,
+        remitente: remitente || "desconocido",
         fecha_envio: fechaEcuador,
         procesado: false,
       },
     });
 
     console.log(
-      `✅ Mensaje guardado correctamente (Centro ${id_centro_comercial}, Telegram ID ${id_mensaje_telegram})`
+      `✅ Mensaje guardado (Centro ${id_centro_comercial}, Telegram ID ${id_mensaje_telegram}, ID limpio ${nuevoMensaje.id_mensaje})`
     );
+
+    // ▶️ Disparar clasificación en tiempo real (llamada interna segura)
+    try {
+      const baseUrl =
+        process.env.NEXT_PUBLIC_BASE_URL ||
+        process.env.INTERNAL_BASE_URL ||
+        "http://localhost:3000";
+
+      const resClasif = await fetch(`${baseUrl}/api/mensajes-clasificados/auto`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": BOT_API_KEY, // misma clave
+        },
+        body: JSON.stringify({ id_mensaje_limpio: nuevoMensaje.id_mensaje }),
+      });
+
+      if (!resClasif.ok) {
+        const err = await resClasif.json().catch(() => ({}));
+        console.error("⚠️ No se pudo disparar clasificación:", resClasif.status, err?.message || "");
+      }
+    } catch (e) {
+      console.error("⚠️ Error invocando clasificación automática:", e);
+    }
 
     return NextResponse.json(nuevoMensaje, { status: 200 });
   } catch (error) {
