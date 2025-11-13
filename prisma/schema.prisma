@@ -15,19 +15,21 @@ enum rol {
 }
 
 enum area {
+  recepcion
+  administracion
   mantenimiento
   seguridad
-  limpieza
-  administracion
+  mercadeo
+  sso
 }
 
 /// Tabla: centros_comerciales
 model centros_comerciales {
-  id_centro_comercial  Int       @id @default(autoincrement()) @map("id_centro_comercial")
-  nombre               String    @unique @map("nombre")
-  ciudad               String    @map("ciudad")
-  ubicacion            String?   @map("ubicacion")
-  id_grupo_telegram    String    @unique @map("id_grupo_telegram")
+  id_centro_comercial  Int                 @id @default(autoincrement()) @map("id_centro_comercial")
+  nombre               String              @unique @map("nombre")
+  ciudad               String              @map("ciudad")
+  ubicacion            String?             @map("ubicacion")
+  id_grupo_telegram    String              @unique @map("id_grupo_telegram")
   usuarios             usuarios[]
   mensajes_limpios     mensajes_limpios[]
 
@@ -36,16 +38,16 @@ model centros_comerciales {
 
 /// Tabla: usuarios
 model usuarios {
-  id_usuario          Int      @id @default(autoincrement()) @map("id_usuario")
-  nombre              String   @map("nombre")
-  correo              String   @unique @map("correo")
-  telefono            String?  @unique @map("telefono")
-  usuario             String   @unique @map("usuario")
-  password            String   @map("password")
-  rol                 rol      @map("rol")
-  area                area?    @map("area")
-  id_centro_comercial Int?     @map("id_centro_comercial")
-  centro_comercial    centros_comerciales? @relation(fields: [id_centro_comercial], references: [id_centro_comercial])
+  id_usuario          Int                   @id @default(autoincrement()) @map("id_usuario")
+  nombre              String                @map("nombre")
+  correo              String                @unique @map("correo")
+  telefono            String?               @unique @map("telefono")
+  usuario             String                @unique @map("usuario")
+  password            String                @map("password")
+  rol                 rol                   @map("rol")
+  area                area?                 @map("area")
+  id_centro_comercial Int?                  @map("id_centro_comercial")
+  centro_comercial    centros_comerciales?  @relation(fields: [id_centro_comercial], references: [id_centro_comercial])
 
   @@index([rol, id_centro_comercial], map: "idx_usuarios_rol_centro")
   @@index([usuario], map: "idx_usuarios_usuario")
@@ -54,16 +56,29 @@ model usuarios {
 
 /// Tabla: mensajes_limpios
 model mensajes_limpios {
-  id_mensaje             Int                   @id @default(autoincrement()) @map("id_mensaje")
-  id_mensaje_telegram    Int                   @map("id_mensaje_telegram") 
-  id_centro_comercial    Int                   @map("id_centro_comercial")
-  centro_comercial       centros_comerciales   @relation(fields: [id_centro_comercial], references: [id_centro_comercial])
-  contenido_original     String              @db.Text @map("contenido_original")  
-  contenido_limpio       String              @db.Text @map("contenido_limpio")    
-  remitente              String?               @map("remitente")
-  fecha_envio            DateTime              @map("fecha_envio")
-  procesado              Boolean               @default(false) @map("procesado")
+  id_mensaje             Int                 @id @default(autoincrement()) @map("id_mensaje")
+  id_mensaje_telegram    Int                 @map("id_mensaje_telegram")
+  id_centro_comercial    Int                 @map("id_centro_comercial")
+  centro_comercial       centros_comerciales @relation(fields: [id_centro_comercial], references: [id_centro_comercial])
+  contenido_original     String              @db.Text @map("contenido_original")
+  contenido_limpio       String              @db.Text @map("contenido_limpio")
+  remitente              String?             @map("remitente")
+  fecha_envio            DateTime            @map("fecha_envio")
+  procesado              Boolean             @default(false) @map("procesado")
+  clasificacion          mensajes_clasificados?
 
   @@unique([id_centro_comercial, id_mensaje_telegram], map: "unique_msg_per_centro")
   @@map("mensajes_limpios")
+}
+
+/// Tabla: mensajes_clasificados
+model mensajes_clasificados {
+  id_mensaje_clasificado Int              @id @default(autoincrement()) @map("id_mensaje_clasificado")
+  id_mensaje_limpio      Int              @unique @map("id_mensaje_limpio")
+  area_clasificada       area             @map("area_clasificada")
+  confianza              Float            @map("confianza")
+
+  mensaje_limpio mensajes_limpios @relation(fields: [id_mensaje_limpio], references: [id_mensaje])
+
+  @@map("mensajes_clasificados")
 }

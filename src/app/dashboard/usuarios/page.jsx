@@ -394,10 +394,12 @@ function UserModal({ onSaved, rolActual }) {
             disabled={isAreaDisabled}
           >
             <option value="">Selecciona un área</option>
+            <option value="recepcion">Recepción</option>
+            <option value="administracion">Administración</option>
             <option value="mantenimiento">Mantenimiento</option>
             <option value="seguridad">Seguridad</option>
-            <option value="limpieza">Limpieza</option>
-            <option value="administracion">Administración</option>
+            <option value="mercadeo">Mercadeo</option>
+            <option value="sso">SSO</option>
           </select>
           {errors.area && <p className="error-text">{errors.area}</p>}
 
