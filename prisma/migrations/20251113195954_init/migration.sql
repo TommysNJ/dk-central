@@ -47,10 +47,30 @@ CREATE TABLE `mensajes_limpios` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
+CREATE TABLE `incidentes` (
+    `id_incidente` INTEGER NOT NULL AUTO_INCREMENT,
+    `nombre` VARCHAR(191) NOT NULL,
+    `area` ENUM('recepcion', 'administracion', 'mantenimiento', 'seguridad', 'mercadeo', 'sso') NOT NULL,
+
+    UNIQUE INDEX `incidentes_nombre_key`(`nombre`),
+    PRIMARY KEY (`id_incidente`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `keywords_incidentes` (
+    `id_keyword` INTEGER NOT NULL AUTO_INCREMENT,
+    `palabra` VARCHAR(191) NOT NULL,
+    `id_incidente` INTEGER NOT NULL,
+
+    UNIQUE INDEX `keywords_incidentes_palabra_key`(`palabra`),
+    PRIMARY KEY (`id_keyword`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
 CREATE TABLE `mensajes_clasificados` (
     `id_mensaje_clasificado` INTEGER NOT NULL AUTO_INCREMENT,
     `id_mensaje_limpio` INTEGER NOT NULL,
-    `area_clasificada` ENUM('recepcion', 'administracion', 'mantenimiento', 'seguridad', 'mercadeo', 'sso') NOT NULL,
+    `id_incidente` INTEGER NOT NULL,
     `confianza` DOUBLE NOT NULL,
 
     UNIQUE INDEX `mensajes_clasificados_id_mensaje_limpio_key`(`id_mensaje_limpio`),
@@ -64,4 +84,10 @@ ALTER TABLE `usuarios` ADD CONSTRAINT `usuarios_id_centro_comercial_fkey` FOREIG
 ALTER TABLE `mensajes_limpios` ADD CONSTRAINT `mensajes_limpios_id_centro_comercial_fkey` FOREIGN KEY (`id_centro_comercial`) REFERENCES `centros_comerciales`(`id_centro_comercial`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE `keywords_incidentes` ADD CONSTRAINT `keywords_incidentes_id_incidente_fkey` FOREIGN KEY (`id_incidente`) REFERENCES `incidentes`(`id_incidente`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE `mensajes_clasificados` ADD CONSTRAINT `mensajes_clasificados_id_mensaje_limpio_fkey` FOREIGN KEY (`id_mensaje_limpio`) REFERENCES `mensajes_limpios`(`id_mensaje`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `mensajes_clasificados` ADD CONSTRAINT `mensajes_clasificados_id_incidente_fkey` FOREIGN KEY (`id_incidente`) REFERENCES `incidentes`(`id_incidente`) ON DELETE RESTRICT ON UPDATE CASCADE;

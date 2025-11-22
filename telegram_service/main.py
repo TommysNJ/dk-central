@@ -5,6 +5,7 @@ from cleaner import limpiar_texto
 from sender import enviar_mensaje_limpio
 from fetch_centros import obtener_centros
 from utils import log
+from webhook_server import start_webhook_server
 
 # Cargar configuración
 with open("config.json", "r", encoding="utf-8") as f:
@@ -14,6 +15,9 @@ api_id = config["api_id"]
 api_hash = config["api_hash"]
 backend_url = config["backend_url"]
 bot_api_key = config["bot_api_key"]
+
+webhook_host = config["webhook_host"]
+webhook_port = int(config["webhook_port"])
 
 client = TelegramClient("session", api_id, api_hash)
 
@@ -44,7 +48,7 @@ async def procesar_grupo(grupo_id, id_centro):
             log(f"⚠️ No se pudo acceder al grupo {grupo_id_num}: {e}")
             return
 
-        async for message in client.iter_messages(entity, limit=20):
+        async for message in client.iter_messages(entity, limit=1):
             if not message.text:
                 continue
 
@@ -135,6 +139,59 @@ async def main():
         # Procesar mensajes históricos (como antes)
         for c in centros:
             await procesar_grupo(c["id_grupo_telegram"], c["id_centro_comercial"])
+            
+        # 🔔 Callback que será llamado por el servidor de webhooks
+        async def on_centro_update(data: dict):
+            try:
+                action = data.get("action")
+                id_centro = data.get("id_centro_comercial")
+                grupo_id = data.get("id_grupo_telegram")
+                old_grupo_id = data.get("old_id_grupo_telegram")
+
+                if not id_centro or not grupo_id:
+                    log("⚠️ Webhook sin id_centro_comercial o id_grupo_telegram. Se ignora.")
+                    return
+
+                grupo_id_str = str(grupo_id).lstrip("-")
+
+                if action == "created":
+                    grupos_centros[grupo_id_str] = id_centro
+                    log(f"🆕 Centro agregado vía webhook: centro {id_centro}, grupo {grupo_id}")
+                    # Procesar último mensaje de ese grupo
+                    await procesar_grupo(grupo_id, id_centro)
+
+                elif action == "updated":
+                    # Si cambió el ID de grupo, limpiamos el viejo
+                    if old_grupo_id:
+                        old_str = str(old_grupo_id).lstrip("-")
+                        if grupos_centros.get(old_str) == id_centro:
+                            grupos_centros.pop(old_str, None)
+
+                    grupos_centros[grupo_id_str] = id_centro
+                    log(f"♻️ Centro actualizado vía webhook: centro {id_centro}, grupo {grupo_id}")
+                    await procesar_grupo(grupo_id, id_centro)
+
+                elif action == "deleted":
+                    if grupos_centros.get(grupo_id_str) == id_centro:
+                        grupos_centros.pop(grupo_id_str, None)
+                    log(f"🗑️ Centro eliminado vía webhook: centro {id_centro}, grupo {grupo_id}")
+
+                else:
+                    log(f"⚠️ Acción de webhook desconocida: {action}")
+
+            except Exception as e:
+                log(f"❌ Error manejando webhook de centros: {e}")
+
+        # 🚀 Iniciar servidor de webhooks (no bloquea a Telethon)
+        try:
+            await start_webhook_server(
+                webhook_host,
+                webhook_port,
+                bot_api_key,
+                on_centro_update,
+            )
+        except Exception as e:
+            log(f"⚠️ No se pudo iniciar servidor de webhooks: {e}")
 
         log("👂 Escuchando mensajes en tiempo real... (Ctrl + C para detener)")
         await client.run_until_disconnected()  # <-- Mantiene el cliente vivo escuchando

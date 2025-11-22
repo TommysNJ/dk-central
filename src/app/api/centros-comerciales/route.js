@@ -2,6 +2,11 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { authorize } from "@/lib/authorize";
 
+
+// 🔐 Misma clave que usa el microservicio / bot
+const BOT_API_KEY = process.env.BOT_API_KEY || "CLAVE_SEGURA_DE_AUTENTICACION";
+const TELEGRAM_WEBHOOK_URL = process.env.TELEGRAM_WEBHOOK_URL || "";
+
 // 🔹 GET: lista filtrada por ciudad
 export async function GET(req) {
   const session = await authorize(req, ["admin_sistema"]);
@@ -63,6 +68,27 @@ export async function POST(req) {
     const nuevoCentro = await prisma.centros_comerciales.create({
       data: { nombre, ciudad, ubicacion: ubicacion || "", id_grupo_telegram },
     });
+
+    // 🔔 Notificar al servicio de Telegram (webhook) – no rompe nada si falla
+    if (TELEGRAM_WEBHOOK_URL) {
+      try {
+        fetch(TELEGRAM_WEBHOOK_URL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "x-api-key": BOT_API_KEY,
+          },
+          body: JSON.stringify({
+            action: "created",
+            id_centro_comercial: nuevoCentro.id_centro_comercial,
+            id_grupo_telegram: nuevoCentro.id_grupo_telegram,
+            nombre: nuevoCentro.nombre,
+          }),
+        });
+      } catch (err) {
+        console.error("⚠️ Error notificando al servicio de Telegram (created):", err);
+      }
+    }
 
     return NextResponse.json(nuevoCentro, { status: 201 });
   } catch (error) {

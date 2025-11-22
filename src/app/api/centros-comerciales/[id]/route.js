@@ -2,6 +2,10 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { authorize } from "@/lib/authorize";
 
+// 🔐 Misma clave que usa el microservicio / bot
+const BOT_API_KEY = process.env.BOT_API_KEY || "CLAVE_SEGURA_DE_AUTENTICACION";
+const TELEGRAM_WEBHOOK_URL = process.env.TELEGRAM_WEBHOOK_URL || "";
+
 // 🔹 PUT: editar centro comercial
 export async function PUT(req, { params }) {
   const session = await authorize(req, ["admin_sistema"]);
@@ -29,6 +33,11 @@ export async function PUT(req, { params }) {
 
 
   try {
+    // Guardamos el estado anterior para poder avisar al bot si cambió el grupo
+    const centroAntes = await prisma.centros_comerciales.findUnique({
+      where: { id_centro_comercial: Number(id) },
+    });
+
     const duplicado = await prisma.centros_comerciales.findFirst({
       where: {
         OR: [{ nombre }, { id_grupo_telegram }],
@@ -48,6 +57,28 @@ export async function PUT(req, { params }) {
       where: { id_centro_comercial: Number(id) },
       data: { nombre, ciudad, ubicacion: ubicacion || "", id_grupo_telegram },
     });
+
+    // 🔔 Notificar al servicio de Telegram (webhook)
+    if (TELEGRAM_WEBHOOK_URL) {
+      try {
+        fetch(TELEGRAM_WEBHOOK_URL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "x-api-key": BOT_API_KEY,
+          },
+          body: JSON.stringify({
+            action: "updated",
+            id_centro_comercial: actualizado.id_centro_comercial,
+            id_grupo_telegram: actualizado.id_grupo_telegram,
+            old_id_grupo_telegram: centroAntes?.id_grupo_telegram || null,
+            nombre: actualizado.nombre,
+          }),
+        });
+      } catch (err) {
+        console.error("⚠️ Error notificando al servicio de Telegram (updated):", err);
+      }
+    }
 
     return NextResponse.json(actualizado, { status: 200 });
   } catch (error) {
@@ -81,6 +112,27 @@ export async function DELETE(req, { params }) {
     await prisma.centros_comerciales.delete({
       where: { id_centro_comercial: Number(id) },
     });
+
+    // 🔔 Notificar al servicio de Telegram (webhook)
+    if (TELEGRAM_WEBHOOK_URL) {
+      try {
+        fetch(TELEGRAM_WEBHOOK_URL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "x-api-key": BOT_API_KEY,
+          },
+          body: JSON.stringify({
+            action: "deleted",
+            id_centro_comercial: centro.id_centro_comercial,
+            id_grupo_telegram: centro.id_grupo_telegram,
+            nombre: centro.nombre,
+          }),
+        });
+      } catch (err) {
+        console.error("⚠️ Error notificando al servicio de Telegram (deleted):", err);
+      }
+    }
 
     return NextResponse.json(
       { message: "Centro comercial eliminado correctamente." },
