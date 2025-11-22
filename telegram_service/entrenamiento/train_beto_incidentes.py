@@ -23,8 +23,10 @@ from transformers import (
 # CONFIGURACIÓN
 # ===============================
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-DATA_PATH = os.path.join(BASE_DIR, "dataset_mensajes.csv")
-LABELS_PATH = os.path.join(BASE_DIR, "labels.json")
+
+# ⚠️ Ahora el dataset viene desde auto_etiquetador.py
+DATA_PATH = os.path.join(BASE_DIR, "dataset_incidentes.csv")
+LABELS_PATH = os.path.join(BASE_DIR, "labels.json")     # usado también por clasificador.py
 MODEL_OUT = os.path.join(BASE_DIR, "modelo_beto")
 MODEL_NAME = "dccuchile/bert-base-spanish-wwm-cased"
 
@@ -32,8 +34,12 @@ MODEL_NAME = "dccuchile/bert-base-spanish-wwm-cased"
 # FUNCIONES AUXILIARES
 # ===============================
 def load_labels():
+    """
+    Carga el archivo labels.json con la lista de INCIDENTES en minúsculas.
+    """
     with open(LABELS_PATH, "r", encoding="utf-8") as f:
         labels = json.load(f)
+
     labels = [str(x).strip().lower() for x in labels if str(x).strip()]
     return labels, {label: i for i, label in enumerate(labels)}
 
@@ -54,21 +60,31 @@ def main():
     labels, label2id = load_labels()
 
     # ---- Cargar dataset ----
+    print("📌 Cargando dataset de incidentes…")
     df = pd.read_csv(DATA_PATH).fillna("")
-    if "mensaje_limpio" not in df.columns:
-        raise ValueError("El dataset debe tener la columna 'mensaje_limpio' y 'area'")
 
-    df["area"] = df["area"].str.strip().str.lower()
-    df = df[df["area"].isin(labels)]
+    if "mensaje_limpio" not in df.columns or "incidente" not in df.columns:
+        raise ValueError("El dataset debe tener 'mensaje_limpio' y 'incidente'")
+
+    df["incidente"] = df["incidente"].str.strip().str.lower()
+
+    # Filtrar solo incidentes dentro de labels.json
+    df = df[df["incidente"].isin(labels)]
     df = df[df["mensaje_limpio"].str.strip() != ""]
-    df = df[["mensaje_limpio", "area"]].rename(columns={"mensaje_limpio": "text", "area": "label"})
+
+    df = df[["mensaje_limpio", "incidente"]].rename(
+        columns={"mensaje_limpio": "text", "incidente": "label"}
+    )
 
     df["labels"] = df["label"].map(label2id)
     df = df.dropna(subset=["labels"])
 
     # ---- Split ----
     train_df, val_df = train_test_split(
-        df, test_size=0.3, random_state=42, stratify=df["labels"]
+        df,
+        test_size=0.3,
+        random_state=42,
+        stratify=df["labels"],
     )
 
     # ---- Dataset HuggingFace ----
@@ -79,7 +95,12 @@ def main():
     tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
 
     def tokenize_fn(batch):
-        return tokenizer(batch["text"], truncation=True, padding="max_length", max_length=128)
+        return tokenizer(
+            batch["text"],
+            truncation=True,
+            padding="max_length",
+            max_length=128,
+        )
 
     ds_tok = ds.map(tokenize_fn, batched=True)
 
@@ -114,7 +135,7 @@ def main():
         compute_metrics=compute_metrics,
     )
 
-    print("🚀 Iniciando entrenamiento...")
+    print("🚀 Iniciando entrenamiento del modelo BETO para INCIDENTES…")
     trainer.train()
 
     # ---- Evaluación ----
@@ -123,16 +144,23 @@ def main():
     preds = np.argmax(preds_output.predictions, axis=-1)
     true_labels = preds_output.label_ids
 
-    print("\n📋 Reporte de clasificación por área:")
+    print("\n📋 Reporte de clasificación por INCIDENTE:")
     print(classification_report(true_labels, preds, target_names=labels, digits=3))
 
     # ---- Matriz de confusión ----
     cm = confusion_matrix(true_labels, preds)
     plt.figure(figsize=(8, 6))
-    sns.heatmap(cm, annot=True, fmt="d", cmap="Blues", xticklabels=labels, yticklabels=labels)
+    sns.heatmap(
+        cm,
+        annot=True,
+        fmt="d",
+        cmap="Blues",
+        xticklabels=labels,
+        yticklabels=labels,
+    )
     plt.xlabel("Predicción")
     plt.ylabel("Real")
-    plt.title("Matriz de confusión - BETO Clasificación por área")
+    plt.title("Matriz de confusión - BETO Clasificación de INCIDENTES")
     plt.tight_layout()
     plt.savefig(os.path.join(MODEL_OUT, "matriz_confusion.png"))
     print(f"\n🖼️ Matriz de confusión guardada en: {os.path.join(MODEL_OUT, 'matriz_confusion.png')}")
@@ -140,7 +168,7 @@ def main():
     # ---- Guardar modelo ----
     model.save_pretrained(MODEL_OUT)
     tokenizer.save_pretrained(MODEL_OUT)
-    print(f"\n✅ Modelo entrenado y guardado en: {MODEL_OUT}")
+    print(f"\n✅ Modelo BETO entrenado y guardado en: {MODEL_OUT}")
 
 # ===============================
 if __name__ == "__main__":

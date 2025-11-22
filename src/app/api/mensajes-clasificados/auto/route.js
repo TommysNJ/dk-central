@@ -5,7 +5,6 @@ import { spawn } from "child_process";
 
 const BOT_API_KEY = process.env.BOT_API_KEY || "CLAVE_SEGURA_DE_AUTENTICACION";
 
-// Ruta absoluta a tu entorno virtual de Python
 const PYTHON_PATH =
   process.env.PYTHON_PATH ||
   "/Users/tommy/Documents/Desarrollo-Tesis/dk-central/telegram_service/venv/bin/python";
@@ -18,49 +17,67 @@ export async function POST(req) {
 
   try {
     const { id_mensaje_limpio } = await req.json();
-    if (!id_mensaje_limpio) {
+    if (!id_mensaje_limpio)
       return NextResponse.json(
         { message: "id_mensaje_limpio requerido" },
         { status: 400 }
       );
-    }
 
     // 1️⃣ Buscar mensaje limpio
     const mensaje = await prisma.mensajes_limpios.findUnique({
       where: { id_mensaje: Number(id_mensaje_limpio) },
     });
 
-    if (!mensaje) {
+    if (!mensaje)
       return NextResponse.json(
         { message: "Mensaje no encontrado" },
         { status: 404 }
       );
-    }
 
-    // 2️⃣ Verificar si ya fue procesado
-    if (mensaje.procesado) {
-      // Verificar si ya tiene clasificación asociada
-      const clasifExistente = await prisma.mensajes_clasificados.findUnique({
-        where: { id_mensaje_limpio: mensaje.id_mensaje },
-      });
+    // 2️⃣ Buscar si YA existe una clasificación (importantísimo)
+    const clasifExistente = await prisma.mensajes_clasificados.findUnique({
+      where: { id_mensaje_limpio: mensaje.id_mensaje },
+    });
 
-      if (clasifExistente) {
-        return NextResponse.json(
-          {
-            message: "Mensaje ya procesado y clasificado",
-            clasificacion: clasifExistente,
-          },
-          { status: 200 }
-        );
-      } else {
-        // Caso raro: marcado como procesado pero sin registro de clasificación
-        console.warn(
-          `⚠️ Inconsistencia detectada: mensaje ${mensaje.id_mensaje} está procesado pero no tiene clasificación. Se reclasificará.`
-        );
+    // --------------------------------------------------------------------
+    // 🔒 CASO A: Ya está clasificado → NO hacer nada más (aunque procesado=0)
+    // --------------------------------------------------------------------
+    if (clasifExistente) {
+      // Corrección: si por accidente procesado está en 0, lo arreglamos.
+      if (!mensaje.procesado) {
+        await prisma.mensajes_limpios.update({
+          where: { id_mensaje: mensaje.id_mensaje },
+          data: { procesado: true },
+        });
       }
+
+      console.warn(
+        `Mensaje clasificado anteriormente pero procesado en 0 - se corrigió y se puso procesado en 1`
+      );
+
+      return NextResponse.json(
+        {
+          
+          message: "Mensaje ya procesado y clasificado",
+          clasificacion: clasifExistente,
+        },
+        { status: 200 }
+      );
     }
 
-    // 3️⃣ Ejecutar clasificador solo si no fue procesado o si se detectó inconsistencia
+    // --------------------------------------------------------------------
+    // 🔎 CASO B: procesado=true pero NO hay clasificación → INCONSISTENCIA
+    // --------------------------------------------------------------------
+    if (mensaje.procesado && !clasifExistente) {
+      console.warn(
+        `⚠️ Inconsistencia detectada: mensaje ${mensaje.id_mensaje} sin clasificación. Reclasificando...`
+      );
+    }
+
+    // --------------------------------------------------------------------
+    // 🚀 CASO C: No clasificado → ejecutar clasificador Python
+    // --------------------------------------------------------------------
+
     const scriptPath = path.resolve(
       process.cwd(),
       "telegram_service",
@@ -83,18 +100,16 @@ export async function POST(req) {
 
       py.stdout.on("data", (d) => (stdout += d.toString()));
       py.stderr.on("data", (d) => (stderr += d.toString()));
-
       py.on("error", (err) => reject(err));
 
       py.on("close", (code) => {
-        if (code !== 0) {
+        if (code !== 0)
           return reject(
             new Error(`clasificador.py exit code ${code}: ${stderr}`)
           );
-        }
+
         try {
-          const json = JSON.parse(stdout);
-          resolve(json);
+          resolve(JSON.parse(stdout));
         } catch (e) {
           reject(
             new Error(
@@ -108,31 +123,52 @@ export async function POST(req) {
       py.stdin.end();
     });
 
-    const areaLower = String(result.area || "").toLowerCase();
+    // Normalizar incidente a nombre usado en BD
+    const incidenteNombre = String(result.incidente || "").toLowerCase();
 
-    // 4️⃣ Guardar clasificación
+    const incidenteDB = await prisma.incidentes.findUnique({
+      where: { nombre: incidenteNombre },
+    });
+
+    if (!incidenteDB) {
+      return NextResponse.json(
+        { message: `Incidente no encontrado en BD: ${incidenteNombre}` },
+        { status: 500 }
+      );
+    }
+
+    // --------------------------------------------------------------------
+    // 📝 Guardar clasificación SIN generar duplicados
+    // --------------------------------------------------------------------
+
     const clasificacion = await prisma.mensajes_clasificados.create({
       data: {
         id_mensaje_limpio: mensaje.id_mensaje,
-        area_clasificada: areaLower,
+        id_incidente: incidenteDB.id_incidente,
         confianza: Number(result.confianza ?? 0),
       },
     });
 
-    // 5️⃣ Marcar como procesado SOLO AHORA ✅
+    // --------------------------------------------------------------------
+    // 🟢 Marcar mensaje como procesado
+    // --------------------------------------------------------------------
+
     await prisma.mensajes_limpios.update({
       where: { id_mensaje: mensaje.id_mensaje },
       data: { procesado: true },
     });
 
     return NextResponse.json(
-      { message: "Clasificado correctamente", clasificacion },
+      {
+        message: "Clasificado correctamente",
+        clasificacion,
+      },
       { status: 200 }
     );
   } catch (error) {
     console.error("❌ Error en clasificación automática:", error);
     return NextResponse.json(
-      { message: "Error interno en clasificación" },
+      { message: "Error interno en clasificación", error: error.message },
       { status: 500 }
     );
   }

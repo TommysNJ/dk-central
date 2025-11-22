@@ -1,8 +1,26 @@
 [
-  "recepcion",
-  "administracion",
-  "mantenimiento",
-  "seguridad",
-  "mercadeo",
-  "sso"
+  "robo",
+  "pelea",
+  "persona sospechosa",
+  "objeto perdido",
+
+  "caida",
+  "inconsciencia",
+  "accidente en escalera",
+  "emergencia medica",
+
+  "fuga de agua",
+  "iluminacion danada",
+  "cableado suelto",
+  "ascensor en falla",
+
+  "queja de cliente",
+  "perdida de documentos",
+
+  "publicidad",
+  "montaje de evento",
+  "retiro material publicitario",
+
+  "ruido excesivo",
+  "vehiculo mal estacionado"
 ]
