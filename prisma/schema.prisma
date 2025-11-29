@@ -25,6 +25,12 @@ enum area {
   sso
 }
 
+enum estado_incidente {
+  revisado
+  en_proceso
+  completado
+}
+
 /// =============================
 /// TABLA: centros_comerciales
 /// =============================
@@ -56,6 +62,8 @@ model usuarios {
   id_centro_comercial Int?                  @map("id_centro_comercial")
 
   centro_comercial    centros_comerciales?  @relation(fields: [id_centro_comercial], references: [id_centro_comercial])
+
+  historial_incidentes historial_incidentes[]
 
   @@index([rol, id_centro_comercial], map: "idx_usuarios_rol_centro")
   @@index([usuario], map: "idx_usuarios_usuario")
@@ -124,8 +132,32 @@ model mensajes_clasificados {
 
   confianza              Float            @map("confianza")
 
+  estado                 estado_incidente @default(revisado) @map("estado")
+  observaciones          String?          @db.Text @map("observaciones")
+
   mensaje_limpio mensajes_limpios @relation(fields: [id_mensaje_limpio], references: [id_mensaje])
   incidente      incidentes       @relation(fields: [id_incidente], references: [id_incidente])
 
+  historial_incidentes historial_incidentes[]
+  
   @@map("mensajes_clasificados")
+}
+
+/// =============================
+/// TABLA: historial_incidentes
+/// =============================
+model historial_incidentes {
+  id_historial           Int                    @id @default(autoincrement()) @map("id_historial")
+  id_mensaje_clasificado Int                    @map("id_mensaje_clasificado")
+  id_usuario             Int                    @map("id_usuario")
+  estado                 estado_incidente       @map("estado")
+  observaciones          String?                @db.Text @map("observaciones")
+  fecha                  DateTime               @default(now()) @map("fecha")
+  fecha_cambio           DateTime?              @db.Date @map("fecha_cambio")
+  hora_cambio            String?                @map("hora_cambio")
+
+  usuario                usuarios               @relation(fields: [id_usuario], references: [id_usuario])
+  mensaje_clasificado    mensajes_clasificados  @relation(fields: [id_mensaje_clasificado], references: [id_mensaje_clasificado])
+
+  @@map("historial_incidentes")
 }
