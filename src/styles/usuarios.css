@@ -188,3 +188,85 @@ td {
   border: 2px solid #dc2626 !important;
   background-color: #fee2e2;
 }
+
+.badge-revisado {
+  background-color: #e2e8f0;
+}
+
+.badge-en-proceso {
+  background-color: #fde68a;
+}
+
+.badge-completado {
+  background-color: #bbf7d0;
+}
+
+/* Para el select de estado en usuario operativo, solo toques suaves */
+.input.badge-en-proceso {
+  background-color: #fff7cc;
+}
+
+.input.badge-completado {
+  background-color: #e7ffe7;
+}
+
+.actions-button-plain {
+  background: #004a99;
+  border: none;
+  color: white;
+  padding: 6px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.actions-button-plain:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* NUEVO: celda de observaciones (quita estilos inline) */
+.obs-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.obs-text {
+  flex: 1;
+}
+
+/* NUEVO: celda para mensaje "no existen incidentes" centrado */
+.no-incidentes-cell {
+  text-align: center;
+}
+
+/* NUEVO: textarea del modal de observación */
+.textarea-observacion {
+  min-height: 120px;
+}
+
+/* ===== COLUMNA MENSAJE ADMIN SISTEMA ===== */
+.table-panel table td:nth-child(5),
+.table-panel table th:nth-child(5) {
+  max-width: 220px;
+  white-space: normal !important;
+  word-wrap: break-word;
+  word-break: break-word;
+}
+
+/* ===== COLUMNA MENSAJE ADMIN CENTRO ===== */
+.table-panel table td:nth-child(4),
+.table-panel table th:nth-child(4) {
+  max-width: 220px;
+  white-space: normal !important;
+  word-wrap: break-word;
+  word-break: break-word;
+}
+
+/* ===== COLUMNA MENSAJE OPERATIVO ===== */
+.table-panel table td:nth-child(3),
+.table-panel table th:nth-child(3) {
+  max-width: 220px;
+  white-space: normal !important;
+  word-wrap: break-word;
+  word-break: break-word;
+}

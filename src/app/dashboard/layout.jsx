@@ -38,7 +38,7 @@ export default function DashboardLayout({ children }) {
         <div>
           <div className="sidebar-header">{nombreRol}</div>
           <div className="menu">
-            <Link href="#" className="menu-item">Incidentes</Link>
+            <Link href="/dashboard/incidentes" className={`menu-item ${isActive("/dashboard/incidentes")}`}>Incidentes</Link>
             <Link href="#" className="menu-item">Reportes y Resúmenes</Link>
             <Link href="#" className="menu-item">Dashboards</Link>
 
