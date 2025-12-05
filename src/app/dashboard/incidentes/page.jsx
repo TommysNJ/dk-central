@@ -49,7 +49,6 @@ export default function IncidentesPage() {
         setAreaUsuario(me.area);
         setIdCentroUsuario(me.id_centro_comercial);
 
-        // Centros solo para admin_sistema
         if (me.rol === "admin_sistema") {
           const resCentros = await fetch("/api/centros");
           if (resCentros.ok) {
@@ -57,7 +56,6 @@ export default function IncidentesPage() {
           }
         }
 
-        // Tipos de incidente (todos los roles)
         const resTipos = await fetch("/api/incidentes-tipos");
         if (resTipos.ok) {
           setTiposIncidente(await resTipos.json());
@@ -159,10 +157,6 @@ export default function IncidentesPage() {
     if (estado === "en_proceso") return "badge-en-proceso";
     return "badge-revisado";
   }
-
-  // ==========================
-  //   Handlers de filtros
-  // ==========================
 
   function handleChangeArea(e) {
     const value = e.target.value;
@@ -340,9 +334,8 @@ export default function IncidentesPage() {
             {tiposIncidente
               .filter((t) => {
                 if (rol === "usuario_operativo") {
-                  return t.area === areaUsuario; // 🔥 SOLO SU ÁREA
+                  return t.area === areaUsuario;
                 }
-                // Admin sistema / admin centro:
                 return !filtroArea || t.area === filtroArea;
               })
               .map((t) => (
@@ -381,21 +374,25 @@ export default function IncidentesPage() {
         <table>
           <thead>
             <tr>
-              <th>Fecha</th>
-              {showCentroCol && <th>Centro</th>}
-              {showAreaCol && <th>Área</th>}
-              <th>Incidente</th>
-              <th>Mensaje</th> 
-              <th>Observación</th>
+              {/* 🔥 AÑADIDO */}
+              <th className="col-hora">Hora</th>
+              <th className="col-fecha">Fecha</th>
+
+              {showCentroCol && <th className="col-centro">Centro</th>}
+              {showAreaCol && <th className="col-area">Área</th>}
+              <th className="col-incidente">Incidente</th>
+              <th className="col-mensaje">Mensaje</th> 
+              <th className="col-observacion">Observación</th>
               <th>Estado</th>
             </tr>
           </thead>
+
           <tbody>
             {items.length === 0 ? (
               <tr>
                 <td
                   colSpan={
-                    showCentroCol ? (showAreaCol ? 7 : 6) : showAreaCol ? 6 : 5
+                    showCentroCol ? (showAreaCol ? 8 : 7) : showAreaCol ? 7 : 6
                   }
                   className="no-incidentes-cell"
                 >
@@ -406,8 +403,11 @@ export default function IncidentesPage() {
               items.map((item) => {
                 let fechaStr = "-";
                 if (item.fecha_date) {
-                  const f = item.fecha_date; // viene como "2025-11-22T00:00:00.000Z"
-                  fechaStr = f.split("T")[0].split("-").reverse().join("/");
+                  const f = item.fecha_date;
+                  fechaStr = f.split("T")[0]
+                    .split("-")
+                    .reverse()
+                    .join("/");
                 }
 
                 const esOperativo = rol === "usuario_operativo";
@@ -415,15 +415,25 @@ export default function IncidentesPage() {
 
                 return (
                   <tr key={item.id_mensaje_clasificado}>
-                    <td>{fechaStr}</td>
-                    {showCentroCol && <td>{item.centro || "-"}</td>}
-                    {showAreaCol && <td>{mapAreaLabel(item.area)}</td>}
-                    <td>{item.incidente}</td>
+
+                    {/* 🔥 CELDA DE HORA */}
+                    <td className="col-hora">{item.fecha_time || "-"}</td>
+
+                    {/* FECHA */}
+                    <td className="col-fecha">{fechaStr}</td>
+
+                    {showCentroCol && (
+                      <td className="col-centro">{item.centro || "-"}</td>
+                    )}
+
+                    {showAreaCol && <td className="col-area">{mapAreaLabel(item.area)}</td>}
+
+                    <td className="col-incidente">{item.incidente}</td>
 
                     {/* ============= COLUMNA MENSAJE ============= */}
-                    <td>{item.mensaje_limpio}</td>
+                    <td className="col-mensaje">{item.mensaje_limpio}</td>
 
-                    <td>
+                    <td className="col-observacion">
                       {esOperativo ? (
                         <div className="obs-cell">
                           <span className="obs-text">
@@ -446,6 +456,7 @@ export default function IncidentesPage() {
                         <span>{item.observaciones || "-"}</span>
                       )}
                     </td>
+
                     <td>
                       {esOperativo ? (
                         <select
@@ -477,8 +488,6 @@ export default function IncidentesPage() {
       </div>
 
       {/* ================= MODALES ================= */}
-
-      {/* Modal Observaciones */}
       {obsModal.open &&
         createPortal(
           <div className="modal">
@@ -503,7 +512,6 @@ export default function IncidentesPage() {
           document.body
         )}
 
-      {/* Modal confirmación estado completado */}
       {estadoModal.open &&
         createPortal(
           <div className="modal delete-modal">
@@ -529,7 +537,6 @@ export default function IncidentesPage() {
           document.body
         )}
 
-      {/* Modal éxito */}
       {successModal &&
         createPortal(
           <SuccessModal

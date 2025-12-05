@@ -128,7 +128,59 @@ async def main():
         centros = obtener_centros(backend_url, bot_api_key)
         if not centros:
             log("⚠️ No hay centros con grupos de Telegram activos.")
-            await client.disconnect()
+            log("👂 Aun así el bot seguirá escuchando mensajes en tiempo real...")
+                    # 🔔 Callback que será llamado por el servidor de webhooks (misma estructura que abajo)
+            async def on_centro_update(data: dict):
+                try:
+                    action = data.get("action")
+                    id_centro = data.get("id_centro_comercial")
+                    grupo_id = data.get("id_grupo_telegram")
+                    old_grupo_id = data.get("old_id_grupo_telegram")
+
+                    if not id_centro or not grupo_id:
+                        log("⚠️ Webhook sin id_centro_comercial o id_grupo_telegram. Se ignora.")
+                        return
+
+                    grupo_id_str = str(grupo_id).lstrip("-")
+
+                    if action == "created":
+                        grupos_centros[grupo_id_str] = id_centro
+                        log(f"🆕 Centro agregado vía webhook: centro {id_centro}, grupo {grupo_id}")
+                        await procesar_grupo(grupo_id, id_centro)
+
+                    elif action == "updated":
+                        if old_grupo_id:
+                            old_str = str(old_grupo_id).lstrip("-")
+                            if grupos_centros.get(old_str) == id_centro:
+                                grupos_centros.pop(old_str, None)
+
+                        grupos_centros[grupo_id_str] = id_centro
+                        log(f"♻️ Centro actualizado vía webhook: centro {id_centro}, grupo {grupo_id}")
+                        await procesar_grupo(grupo_id, id_centro)
+
+                    elif action == "deleted":
+                        if grupos_centros.get(grupo_id_str) == id_centro:
+                            grupos_centros.pop(grupo_id_str, None)
+                        log(f"🗑️ Centro eliminado vía webhook: centro {id_centro}, grupo {grupo_id}")
+
+                    else:
+                        log(f"⚠️ Acción de webhook desconocida: {action}")
+
+                except Exception as e:
+                    log(f"❌ Error manejando webhook de centros: {e}")
+
+
+            # 🚀 Iniciar servidor de webhooks (idéntico al de abajo)
+            try:
+                await start_webhook_server(
+                    webhook_host,
+                    webhook_port,
+                    bot_api_key,
+                    on_centro_update,
+                )
+            except Exception as e:
+                log(f"⚠️ No se pudo iniciar servidor de webhooks: {e}")
+            await client.run_until_disconnected()
             return
 
         # Mapear IDs de grupo con su centro comercial

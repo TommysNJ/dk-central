@@ -244,29 +244,70 @@ td {
   min-height: 120px;
 }
 
-/* ===== COLUMNA MENSAJE ADMIN SISTEMA ===== */
-.table-panel table td:nth-child(5),
-.table-panel table th:nth-child(5) {
-  max-width: 220px;
+/* ===== ENCABEZADOS NO SE ROMPEN ===== */
+th {
+  white-space: nowrap !important;
+}
+
+/* ===== ENCABEZADOS DE COLUMNAS CON ANCHO CONTROLADO ===== */
+th.col-hora,
+th.col-fecha,
+th.col-mensaje,
+th.col-observacion,
+th.col-area,
+th.col-centro,
+th.col-incidente {
+  white-space: nowrap !important;
+}
+
+.col-hora {
+  max-width: 95px;
   white-space: normal !important;
   word-wrap: break-word;
   word-break: break-word;
 }
 
-/* ===== COLUMNA MENSAJE ADMIN CENTRO ===== */
-.table-panel table td:nth-child(4),
-.table-panel table th:nth-child(4) {
-  max-width: 220px;
+.col-fecha {
+  max-width: 110px;
   white-space: normal !important;
   word-wrap: break-word;
   word-break: break-word;
 }
 
-/* ===== COLUMNA MENSAJE OPERATIVO ===== */
-.table-panel table td:nth-child(3),
-.table-panel table th:nth-child(3) {
-  max-width: 220px;
+/* ===== MENSAJE (más grande) ===== */
+.col-mensaje {
+  max-width: 310px;
   white-space: normal !important;
   word-wrap: break-word;
   word-break: break-word;
 }
+
+/* ===== OBSERVACIÓN (más pequeño que mensaje) ===== */
+.col-observacion {
+  max-width: 200px;
+  white-space: normal !important;
+  word-wrap: break-word;
+  word-break: break-word;
+}
+
+/* ===== ÁREA (más pequeña) ===== */
+.col-area {
+  max-width: 120px;             /* 🔥 reducida */
+  white-space: normal !important;
+  word-wrap: break-word;
+  word-break: break-word;
+}
+
+/* ===== CENTRO COMERCIAL (más pequeño) ===== */
+.col-centro {
+  max-width: 120px;
+  white-space: normal !important;
+}
+
+/* ===== INCIDENTE (dos líneas permitidas) ===== */
+.col-incidente {
+  max-width: 90px;
+  white-space: normal !important;
+}
+
+/* (todo el resto del archivo queda igual, NO MODIFICADO) */

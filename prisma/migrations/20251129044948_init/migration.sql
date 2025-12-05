@@ -40,6 +40,8 @@ CREATE TABLE `mensajes_limpios` (
     `contenido_limpio` TEXT NOT NULL,
     `remitente` VARCHAR(191) NULL,
     `fecha_envio` DATETIME(3) NOT NULL,
+    `fecha_envio_date` DATE NULL,
+    `fecha_envio_time` VARCHAR(191) NULL,
     `procesado` BOOLEAN NOT NULL DEFAULT false,
 
     UNIQUE INDEX `unique_msg_per_centro`(`id_centro_comercial`, `id_mensaje_telegram`),
@@ -72,9 +74,25 @@ CREATE TABLE `mensajes_clasificados` (
     `id_mensaje_limpio` INTEGER NOT NULL,
     `id_incidente` INTEGER NOT NULL,
     `confianza` DOUBLE NOT NULL,
+    `estado` ENUM('revisado', 'en_proceso', 'completado') NOT NULL DEFAULT 'revisado',
+    `observaciones` TEXT NULL,
 
     UNIQUE INDEX `mensajes_clasificados_id_mensaje_limpio_key`(`id_mensaje_limpio`),
     PRIMARY KEY (`id_mensaje_clasificado`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `historial_incidentes` (
+    `id_historial` INTEGER NOT NULL AUTO_INCREMENT,
+    `id_mensaje_clasificado` INTEGER NOT NULL,
+    `id_usuario` INTEGER NOT NULL,
+    `estado` ENUM('revisado', 'en_proceso', 'completado') NOT NULL,
+    `observaciones` TEXT NULL,
+    `fecha` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `fecha_cambio` DATE NULL,
+    `hora_cambio` VARCHAR(191) NULL,
+
+    PRIMARY KEY (`id_historial`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- AddForeignKey
@@ -91,3 +109,9 @@ ALTER TABLE `mensajes_clasificados` ADD CONSTRAINT `mensajes_clasificados_id_men
 
 -- AddForeignKey
 ALTER TABLE `mensajes_clasificados` ADD CONSTRAINT `mensajes_clasificados_id_incidente_fkey` FOREIGN KEY (`id_incidente`) REFERENCES `incidentes`(`id_incidente`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `historial_incidentes` ADD CONSTRAINT `historial_incidentes_id_usuario_fkey` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios`(`id_usuario`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `historial_incidentes` ADD CONSTRAINT `historial_incidentes_id_mensaje_clasificado_fkey` FOREIGN KEY (`id_mensaje_clasificado`) REFERENCES `mensajes_clasificados`(`id_mensaje_clasificado`) ON DELETE RESTRICT ON UPDATE CASCADE;
