@@ -276,7 +276,7 @@ th.col-incidente {
 
 /* ===== MENSAJE (más grande) ===== */
 .col-mensaje {
-  max-width: 310px;
+  max-width: 255px;
   white-space: normal !important;
   word-wrap: break-word;
   word-break: break-word;
@@ -310,4 +310,70 @@ th.col-incidente {
   white-space: normal !important;
 }
 
-/* (todo el resto del archivo queda igual, NO MODIFICADO) */
+/* ===== NUEVA COLUMNA BOTÓN TRAZABILIDAD ===== */
+.col-traza {
+  width: 10px;
+  text-align: center;
+}
+
+/* Asegurar que el botón quede centrado en la celda */
+td.col-traza {
+  text-align: center;
+}
+
+/* ============================
+   MODAL DE HISTORIAL (UNIFICADO)
+============================ */
+.historial-modal {
+  width: 700px;
+  max-width: 90%;
+  max-height: 70vh;        /* altura máxima del modal */
+  overflow-y: auto;        /* scroll interno */
+  display: flex;
+  flex-direction: column;
+}
+
+/* El contenido del modal no debe superar la ventana */
+.modal-content.historial-modal {
+  max-height: 80vh !important;
+}
+
+/* ============================
+   TABLA DEL HISTORIAL
+============================ */
+.historial-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 12px;  /* se mantiene el valor mayor */
+}
+
+.historial-table th,
+.historial-table td {
+  padding: 8px 10px;     /* se mantiene el valor más completo */
+  border-bottom: 1px solid #ddd;
+  text-align: left;
+  font-size: 14px;
+  vertical-align: top;   /* añadido donde faltaba */
+}
+
+.historial-usuario {
+  font-weight: 500;
+}
+
+.historial-empty {
+  margin-top: 10px;
+  text-align: center;
+  font-size: 14px;
+}
+
+/* ============================
+   ENCABEZADO DEL MENSAJE
+============================ */
+.historial-mensaje {
+  background: #f1f5f9;
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 14px;
+  margin-bottom: 12px;
+  white-space: normal;
+}

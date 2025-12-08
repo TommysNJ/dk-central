@@ -80,14 +80,88 @@ export async function PUT(req, { params }) {
       );
     }
 
-    const updated = await prisma.mensajes_clasificados.update({
-      where: { id_mensaje_clasificado: Number(id) },
-      data: dataUpdate,
-      include: {
-        mensaje_limpio: true,
-        incidente: true,
-      },
-    });
+        // 👉 Detectar si realmente hay cambios para registrar historial
+    const nuevoEstado = estado ?? incidente.estado;
+    const nuevasObservaciones =
+      typeof observaciones === "string"
+        ? observaciones
+        : incidente.observaciones || "";
+
+    const hayCambioEstado = nuevoEstado !== incidente.estado;
+    const hayCambioObs =
+      (incidente.observaciones || "") !== nuevasObservaciones;
+
+    const debeRegistrarHistorial = hayCambioEstado || hayCambioObs;
+
+    // 🔧 Helper de fecha/hora en hora Ecuador (MISMA LÓGICA QUE MENSAJES_LIMPIOS)
+    function buildFechaYHoraCambio() {
+      // Hora actual (normalmente en UTC en el servidor)
+      const ahora = new Date();
+
+      // ⏰ Convertir a hora Ecuador (UTC-5)
+      const ahoraEcuador = new Date(
+        ahora.getTime() - 5 * 60 * 60 * 1000
+      );
+
+      // 📅 FECHA COMPLETA (DateTime) en hora Ecuador
+      const fechaCompleta = new Date(ahoraEcuador.getTime());
+
+      // 📌 FECHA SOLO (DATE) - sin hora
+      const fechaCambio = new Date(
+        ahoraEcuador.getFullYear(),
+        ahoraEcuador.getMonth(),
+        ahoraEcuador.getDate()
+      );
+
+      // 🕒 HORA (HH:mm:ss) usando toISOString como en mensajes_limpios
+      const horaCambio = ahoraEcuador
+        .toISOString()
+        .split("T")[1]
+        .substring(0, 8);
+
+      return { fechaCompleta, fechaCambio, horaCambio };
+    }
+
+    let updated;
+
+    // 🔄 Usar transacción para mantener consistencia
+    if (debeRegistrarHistorial) {
+      const { fechaCompleta, fechaCambio, horaCambio } = buildFechaYHoraCambio();
+
+      const [updatedResult] = await prisma.$transaction([
+        prisma.mensajes_clasificados.update({
+          where: { id_mensaje_clasificado: Number(id) },
+          data: dataUpdate,
+          include: {
+            mensaje_limpio: true,
+            incidente: true,
+          },
+        }),
+        prisma.historial_incidentes.create({
+          data: {
+            id_mensaje_clasificado: incidente.id_mensaje_clasificado,
+            id_usuario: session.id_usuario, // 🔥 debe venir del token/session
+            estado: nuevoEstado,
+            observaciones: nuevasObservaciones || null,
+            fecha: fechaCompleta,
+            fecha_cambio: fechaCambio,
+            hora_cambio: horaCambio,
+          },
+        }),
+      ]);
+
+      updated = updatedResult;
+    } else {
+      // No hay cambios reales, solo actualizar (por si acaso)
+      updated = await prisma.mensajes_clasificados.update({
+        where: { id_mensaje_clasificado: Number(id) },
+        data: dataUpdate,
+        include: {
+          mensaje_limpio: true,
+          incidente: true,
+        },
+      });
+    }
 
     return NextResponse.json(updated, { status: 200 });
   } catch (error) {
