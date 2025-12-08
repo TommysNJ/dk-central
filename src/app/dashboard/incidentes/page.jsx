@@ -15,12 +15,15 @@ export default function IncidentesPage() {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  // Filtros
+  // Filtros (valores en los controles)
   const [filtroCentro, setFiltroCentro] = useState("");
   const [filtroArea, setFiltroArea] = useState("");
   const [filtroTipo, setFiltroTipo] = useState("");
   const [filtroEstado, setFiltroEstado] = useState("");
   const [filtroFecha, setFiltroFecha] = useState("");
+
+  // ⭐️ Filtros realmente aplicados a la tabla (los últimos con los que se hizo búsqueda)
+  const [filtrosAplicados, setFiltrosAplicados] = useState(null);
 
   // Modals usuario operativo
   const [obsModal, setObsModal] = useState({
@@ -36,6 +39,15 @@ export default function IncidentesPage() {
   });
 
   const [successModal, setSuccessModal] = useState("");
+
+  // 🔥 NUEVO: Modal de historial
+  const [historialModal, setHistorialModal] = useState({
+    open: false,
+    incidente: null,
+    items: [],
+    loading: false,
+    error: "",
+  });
 
   // ==========================
   //   Cargar rol y datos base
@@ -61,28 +73,53 @@ export default function IncidentesPage() {
           setTiposIncidente(await resTipos.json());
         }
 
-        await loadIncidentes({
-          rol: me.rol,
+        // 🔹 Calcular fecha de HOY (formato YYYY-MM-DD)
+        const hoy = new Date();
+        const yyyy = hoy.getFullYear();
+        const mm = String(hoy.getMonth() + 1).padStart(2, "0");
+        const dd = String(hoy.getDate()).padStart(2, "0");
+        const hoyStr = `${yyyy}-${mm}-${dd}`;
+
+        // ❌ NO usamos setFiltroFecha(hoyStr);
+        // Dejamos el input vacío como quieres.
+
+        // 🔹 Filtros iniciales: SOLO HOY (pero no mostrado en el input)
+        const filtrosIniciales = {
           centro: "",
           area: "",
           tipo: "",
           estado: "",
-          fecha: "",
+          fecha: hoyStr,   // ⭐ Se envía al backend, pero NO al input
+        };
+
+        setFiltrosAplicados(filtrosIniciales);
+
+        await loadIncidentes({
+          rol: me.rol,
+          ...filtrosIniciales,
         });
       }
     }
     init();
   }, []);
 
-  async function loadIncidentes({
-    rol,
-    centro,
-    area,
-    tipo,
-    estado,
-    fecha,
-  }) {
-    setLoading(true);
+  async function loadIncidentes(
+    {
+      rol,
+      centro,
+      area,
+      tipo,
+      estado,
+      fecha,
+    },
+    options = {}
+  ) {
+    const { background = false } = options;
+
+    if (!background) {
+      setLoading(true);
+    }
+
     try {
       const params = new URLSearchParams();
 
@@ -108,7 +145,9 @@ export default function IncidentesPage() {
       console.error("Error cargando incidentes:", e);
       setItems([]);
     } finally {
-      setLoading(false);
+      if (!background) {
+        setLoading(false);
+      }
     }
   }
 
@@ -116,15 +155,42 @@ export default function IncidentesPage() {
     e.preventDefault();
     if (!rol) return;
 
-    await loadIncidentes({
-      rol,
+    const nuevosFiltros = {
       centro: filtroCentro,
       area: filtroArea,
       tipo: filtroTipo,
       estado: filtroEstado,
       fecha: filtroFecha,
+    };
+
+    // Guardar filtros aplicados (para el auto-refresh)
+    setFiltrosAplicados(nuevosFiltros);
+
+    await loadIncidentes({
+      rol,
+      ...nuevosFiltros,
     });
   }
+
+  // ==========================
+  //   Auto-refresh de incidentes
+  // ==========================
+  useEffect(() => {
+    if (!rol || !filtrosAplicados) return;
+
+    // ⏱ Pooling cada 15 segundos para revisar nuevos mensajes
+    const interval = setInterval(() => {
+      loadIncidentes(
+        {
+          rol,
+          ...filtrosAplicados,
+        },
+        { background: true } // 👈 no mostramos "Filtrando..."
+      );
+    }, 15000);
+
+    return () => clearInterval(interval);
+  }, [rol, filtrosAplicados]);
 
   // ==========================
   //   Helpers UI
@@ -216,14 +282,21 @@ export default function IncidentesPage() {
 
     if (res.ok) {
       cerrarObsModal();
-      await loadIncidentes({
-        rol,
+
+      // 🔁 Recargar con los filtros aplicados actualmente
+      const filtros = filtrosAplicados || {
         centro: filtroCentro,
         area: filtroArea,
         tipo: filtroTipo,
         estado: filtroEstado,
         fecha: filtroFecha,
+      };
+
+      await loadIncidentes({
+        rol,
+        ...filtros,
       });
+
       setSuccessModal("obs");
     } else {
       const data = await res.json().catch(() => ({}));
@@ -267,19 +340,77 @@ export default function IncidentesPage() {
     );
 
     if (res.ok) {
-      await loadIncidentes({
-        rol,
+      // 🔁 Recargar con los filtros aplicados actualmente
+      const filtros = filtrosAplicados || {
         centro: filtroCentro,
         area: filtroArea,
         tipo: filtroTipo,
         estado: filtroEstado,
         fecha: filtroFecha,
+      };
+
+      await loadIncidentes({
+        rol,
+        ...filtros,
       });
+
       setSuccessModal("estado");
     } else {
       const data = await res.json().catch(() => ({}));
       alert(data.message || "Error al actualizar estado");
     }
+  }
+
+  // ==========================
+  //   Historial (modal)
+  // ==========================
+
+  async function abrirHistorial(item) {
+    setHistorialModal({
+      open: true,
+      incidente: item,
+      items: [],
+      loading: true,
+      error: "",
+    });
+
+    try {
+      const res = await fetch(
+        `/api/incidentes/${item.id_mensaje_clasificado}/historial`
+      );
+      if (res.ok) {
+        const data = await res.json();
+        setHistorialModal((prev) => ({
+          ...prev,
+          items: data,
+          loading: false,
+        }));
+      } else {
+        const j = await res.json().catch(() => ({}));
+        setHistorialModal((prev) => ({
+          ...prev,
+          loading: false,
+          error: j.message || "Error al cargar el historial",
+        }));
+      }
+    } catch (e) {
+      console.error("Error cargando historial:", e);
+      setHistorialModal((prev) => ({
+        ...prev,
+        loading: false,
+        error: "Error al cargar el historial",
+      }));
+    }
+  }
+
+  function cerrarHistorial() {
+    setHistorialModal({
+      open: false,
+      incidente: null,
+      items: [],
+      loading: false,
+      error: "",
+    });
   }
 
   if (!rol) {
@@ -374,14 +505,15 @@ export default function IncidentesPage() {
         <table>
           <thead>
             <tr>
-              {/* 🔥 AÑADIDO */}
+              {/* 🔥 NUEVA COLUMNA: botón trazabilidad */}
+              <th className="col-traza"></th>
               <th className="col-hora">Hora</th>
               <th className="col-fecha">Fecha</th>
 
               {showCentroCol && <th className="col-centro">Centro</th>}
               {showAreaCol && <th className="col-area">Área</th>}
               <th className="col-incidente">Incidente</th>
-              <th className="col-mensaje">Mensaje</th> 
+              <th className="col-mensaje">Mensaje</th>
               <th className="col-observacion">Observación</th>
               <th>Estado</th>
             </tr>
@@ -392,7 +524,7 @@ export default function IncidentesPage() {
               <tr>
                 <td
                   colSpan={
-                    showCentroCol ? (showAreaCol ? 8 : 7) : showAreaCol ? 7 : 6
+                    showCentroCol ? (showAreaCol ? 9 : 8) : showAreaCol ? 8 : 7
                   }
                   className="no-incidentes-cell"
                 >
@@ -404,7 +536,8 @@ export default function IncidentesPage() {
                 let fechaStr = "-";
                 if (item.fecha_date) {
                   const f = item.fecha_date;
-                  fechaStr = f.split("T")[0]
+                  fechaStr = f
+                    .split("T")[0]
                     .split("-")
                     .reverse()
                     .join("/");
@@ -415,6 +548,16 @@ export default function IncidentesPage() {
 
                 return (
                   <tr key={item.id_mensaje_clasificado}>
+                    {/* 🔥 BOTÓN TRAZABILIDAD */}
+                    <td className="col-traza">
+                      <button
+                        className="actions-button-plain"
+                        title="Ver historial de cambios"
+                        onClick={() => abrirHistorial(item)}
+                      >
+                        📄
+                      </button>
+                    </td>
 
                     {/* 🔥 CELDA DE HORA */}
                     <td className="col-hora">{item.fecha_time || "-"}</td>
@@ -426,7 +569,9 @@ export default function IncidentesPage() {
                       <td className="col-centro">{item.centro || "-"}</td>
                     )}
 
-                    {showAreaCol && <td className="col-area">{mapAreaLabel(item.area)}</td>}
+                    {showAreaCol && (
+                      <td className="col-area">{mapAreaLabel(item.area)}</td>
+                    )}
 
                     <td className="col-incidente">{item.incidente}</td>
 
@@ -488,6 +633,8 @@ export default function IncidentesPage() {
       </div>
 
       {/* ================= MODALES ================= */}
+
+      {/* Modal Observaciones */}
       {obsModal.open &&
         createPortal(
           <div className="modal">
@@ -512,6 +659,7 @@ export default function IncidentesPage() {
           document.body
         )}
 
+      {/* Modal confirmación estado completado */}
       {estadoModal.open &&
         createPortal(
           <div className="modal delete-modal">
@@ -537,12 +685,86 @@ export default function IncidentesPage() {
           document.body
         )}
 
+      {/* Modal éxito */}
       {successModal &&
         createPortal(
           <SuccessModal
             mode={successModal}
             onClose={() => setSuccessModal("")}
           />,
+          document.body
+        )}
+
+      {/* 🔥 Modal Historial */}
+      {historialModal.open &&
+        createPortal(
+          <div className="modal">
+            <div className="modal-content historial-modal">
+              <button className="close-btn" onClick={cerrarHistorial}>
+                ✖
+              </button>
+              <h3>Historial del incidente</h3>
+              {historialModal.incidente && (
+                <div className="historial-mensaje">
+                  <strong>Mensaje:</strong> {historialModal.incidente.mensaje_limpio}
+                </div>
+              )}
+
+              {historialModal.loading && <p>Cargando historial...</p>}
+              {historialModal.error && (
+                <p className="error-text">{historialModal.error}</p>
+              )}
+
+              {!historialModal.loading &&
+                !historialModal.error &&
+                historialModal.items.length === 0 && (
+                  <p className="historial-empty">
+                    No existen cambios registrados para este incidente.
+                  </p>
+                )}
+
+              {!historialModal.loading &&
+                !historialModal.error &&
+                historialModal.items.length > 0 && (
+                  <table className="historial-table">
+                    <thead>
+                      <tr>
+                        <th>Fecha</th>
+                        <th>Hora</th>
+                        <th>Usuario</th>
+                        <th>Estado</th>
+                        <th>Observación</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {historialModal.items.map((h) => {
+                        let fechaStr = "-";
+                        if (h.fecha_cambio) {
+                          const f = h.fecha_cambio;
+                          fechaStr = f
+                            .split("T")[0]
+                            .split("-")
+                            .reverse()
+                            .join("/");
+                        }
+
+                        return (
+                          <tr key={h.id_historial}>
+                            <td>{fechaStr}</td>
+                            <td>{h.hora_cambio || "-"}</td>
+                            <td className="historial-usuario">
+                              {h.usuario_nombre}
+                            </td>
+                            <td>{mapEstadoLabel(h.estado)}</td>
+                            <td>{h.observaciones || "-"}</td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                )}
+            </div>
+          </div>,
           document.body
         )}
     </div>

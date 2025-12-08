@@ -24,6 +24,8 @@ export async function authorize(req, rolesPermitidos = []) {
     return NextResponse.json({ message: "Token inválido o expirado" }, { status: 401 });
   }
 
+  session.id_usuario = session.sub;
+  
   if (!rolesPermitidos.includes(session.rol)) {
     return NextResponse.json({ message: "No autorizado" }, { status: 403 });
   }
