@@ -40,7 +40,8 @@ export function middleware(req) {
     const allow =
       pathname.startsWith("/dashboard/admin-centro") ||
       pathname.startsWith("/dashboard/usuarios") ||
-      pathname.startsWith("/dashboard/incidentes");
+      pathname.startsWith("/dashboard/incidentes") ||
+      pathname.startsWith("/dashboard/reportes");
 
     if (allow) return NextResponse.next();
 
@@ -51,7 +52,8 @@ export function middleware(req) {
   if (rol === "usuario_operativo") {
     const allow =
       pathname.startsWith("/dashboard/usuario-operativo") ||
-      pathname.startsWith("/dashboard/incidentes");
+      pathname.startsWith("/dashboard/incidentes") ||
+      pathname.startsWith("/dashboard/reportes");
 
     if (allow) return NextResponse.next();
 
