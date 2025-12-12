@@ -131,3 +131,15 @@
 .report-table tbody tr:nth-child(even) {
   background-color: #fafafa;
 }
+
+/* ================================
+   🔍 CUERPO DEL RESUMEN (IA / GENERAL)
+   ================================ */
+.report-body {
+  font-size: 18px;
+  line-height: 1.7;
+  color: #0f172a;
+  max-width: 900px;        /* ancho cómodo */
+  margin: 0 auto 4px auto; /* centrado dentro del card */
+  text-align: justify;     /* que se lea tipo informe */
+}
