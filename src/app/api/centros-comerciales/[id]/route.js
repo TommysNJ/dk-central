@@ -4,7 +4,7 @@ import { authorize } from "@/lib/authorize";
 
 // 🔐 Misma clave que usa el microservicio / bot
 const BOT_API_KEY = process.env.BOT_API_KEY || "CLAVE_SEGURA_DE_AUTENTICACION";
-const TELEGRAM_WEBHOOK_URL = process.env.TELEGRAM_WEBHOOK_URL || "";
+const TELEGRAM_WEBHOOK_URL = process.env.TELEGRAM_CENTROS_WEBHOOK || "";
 
 // 🔹 PUT: editar centro comercial
 export async function PUT(req, { params }) {

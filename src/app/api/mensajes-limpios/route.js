@@ -147,12 +147,11 @@ export async function POST(req) {
     const fechaOriginal = new Date(fecha_envio);
     const fechaEcuador = new Date(fechaOriginal.getTime() - 5 * 60 * 60 * 1000);
 
-    // 📌 EXTRAER FECHA Y HORA POR SEPARADO
-    const fecha_envio_date = new Date(
-      fechaEcuador.getFullYear(),
-      fechaEcuador.getMonth(),
-      fechaEcuador.getDate()
-    );
+    // 2) Obtener solo el día correcto como string "YYYY-MM-DD"
+    const yyyyMmDd = fechaEcuador.toISOString().slice(0, 10);
+
+    // 3) Construir fecha tipo DATE segura y estable (00:00 UTC)
+    const fecha_envio_date = new Date(`${yyyyMmDd}T00:00:00.000Z`);
 
     const fecha_envio_time = fechaEcuador
       .toISOString()
