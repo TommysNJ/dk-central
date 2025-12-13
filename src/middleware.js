@@ -24,7 +24,7 @@ export function middleware(req) {
 
   // === REGLAS POR ROL ===
 
-  // ⭐ ADMIN SISTEMA → acceso global excepto dashboards ajenos
+  // ⭐ ADMIN SISTEMA 
   if (rol === "admin_sistema") {
     if (
       pathname.startsWith("/dashboard/admin-centro") ||
@@ -35,25 +35,27 @@ export function middleware(req) {
     return NextResponse.next();
   }
 
-  // ⭐ ADMIN CENTRO → solo su dashboard + usuarios + incidentes
+  // ⭐ ADMIN CENTRO 
   if (rol === "admin_centro") {
     const allow =
       pathname.startsWith("/dashboard/admin-centro") ||
       pathname.startsWith("/dashboard/usuarios") ||
       pathname.startsWith("/dashboard/incidentes") ||
-      pathname.startsWith("/dashboard/reportes");
+      pathname.startsWith("/dashboard/reportes") ||
+      pathname.startsWith("/dashboard/resumenes");
 
     if (allow) return NextResponse.next();
 
     return NextResponse.redirect(new URL("/dashboard/admin-centro", req.url));
   }
 
-  // ⭐ USUARIO OPERATIVO → solo su dashboard + incidentes
+  // ⭐ USUARIO OPERATIVO 
   if (rol === "usuario_operativo") {
     const allow =
       pathname.startsWith("/dashboard/usuario-operativo") ||
       pathname.startsWith("/dashboard/incidentes") ||
-      pathname.startsWith("/dashboard/reportes");
+      pathname.startsWith("/dashboard/reportes") ||
+      pathname.startsWith("/dashboard/resumenes");
 
     if (allow) return NextResponse.next();
 

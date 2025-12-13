@@ -39,7 +39,8 @@ export default function DashboardLayout({ children }) {
           <div className="sidebar-header">{nombreRol}</div>
           <div className="menu">
             <Link href="/dashboard/incidentes" className={`menu-item ${isActive("/dashboard/incidentes")}`}>Incidentes</Link>
-            <Link href="/dashboard/reportes" className={`menu-item ${isActive("/dashboard/reportes")}`}>Reportes y Resúmenes</Link>
+            <Link href="/dashboard/reportes" className={`menu-item ${isActive("/dashboard/reportes")}`}>Reportes</Link>
+            <Link href="/dashboard/resumenes" className={`menu-item ${isActive("/dashboard/resumenes")}`}>Resúmenes</Link>
             <Link href="#" className="menu-item">Dashboards</Link>
 
             {(rol === "admin_sistema" || rol === "admin_centro") && (
