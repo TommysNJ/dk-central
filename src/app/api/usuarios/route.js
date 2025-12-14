@@ -3,6 +3,9 @@ import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 import { authorize } from "@/lib/authorize";
 
+import { sendUserCreatedEmail } from "@/lib/mailer";
+import { emailDomainExists } from "@/lib/validateEmail";
+
 // GET - lista de usuarios
 export async function GET(req) {
   const session = await authorize(req, ["admin_sistema", "admin_centro"]);
@@ -65,6 +68,15 @@ export async function POST(req) {
   if (!emailRegex.test(correo)) {
     return NextResponse.json(
       { message: "Debe ingresar un correo electrónico válido." },
+      { status: 400 }
+    );
+  }
+
+  // 🔥 NUEVO — validar que el dominio del correo exista (MX)
+  const dominioValido = await emailDomainExists(correo);
+  if (!dominioValido) {
+    return NextResponse.json(
+      { message: "El correo ingresado no existe o no puede recibir mensajes." },
       { status: 400 }
     );
   }
@@ -141,13 +153,9 @@ export async function POST(req) {
   if (existente) {
     let campoDuplicado = "";
 
-    if (existente.correo === correo) {
-      campoDuplicado = "correo";
-    } else if (existente.telefono === telefono) {
-      campoDuplicado = "teléfono";
-    } else if (existente.usuario === usuario) {
-      campoDuplicado = "usuario";
-    }
+    if (existente.correo === correo) campoDuplicado = "correo";
+    else if (existente.telefono === telefono) campoDuplicado = "teléfono";
+    else if (existente.usuario === usuario) campoDuplicado = "usuario";
 
     return NextResponse.json(
       { message: `El ${campoDuplicado} ya existe. Intenta con otro.` },
@@ -169,6 +177,20 @@ export async function POST(req) {
       },
       include: { centro_comercial: true },
     });
+
+    // 🔥 NUEVO — envío de correo SOLO al crear
+    try {
+      await sendUserCreatedEmail({
+        to: correo,
+        nombre,
+        usuario,
+        password,
+        adminNombre: session.nombre,
+        adminCorreo: session.correo,
+      });
+    } catch (mailError) {
+      console.error("Error enviando correo de creación:", mailError);
+    }
 
     return NextResponse.json(user, { status: 201 });
   } catch (error) {

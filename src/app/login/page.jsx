@@ -8,6 +8,12 @@ export default function LoginPage() {
   const router = useRouter();
   const [usuario, setUsuario] = useState("");
   const [password, setPassword] = useState("");
+  const [twoFactorCode, setTwoFactorCode] = useState("");
+  const [twoFactorRequired, setTwoFactorRequired] = useState(false);
+
+  const [showSetup2FA, setShowSetup2FA] = useState(false);
+  const [qr2FA, setQr2FA] = useState("");
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -15,21 +21,79 @@ export default function LoginPage() {
     e.preventDefault();
     setError("");
     setLoading(true);
+
     const res = await fetch("/api/auth/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ usuario, password }),
+      body: JSON.stringify({ usuario, password, twoFactorCode }),
     });
+
     setLoading(false);
+    const data = await res.json();
+
     if (!res.ok) {
-      const j = await res.json();
-      setError(j.message || "Error de autenticación");
+      setError(data.message || "Error de autenticación");
       return;
     }
-    const { rol } = await res.json();
+
+    if (data.twoFactorSetupRequired) {
+      await start2FASetup();
+      return;
+    }
+
+    if (data.twoFactorRequired) {
+      setTwoFactorRequired(true);
+      setError("");
+      return;
+    }
+
+    const { rol } = data;
     if (rol === "admin_sistema") router.replace("/dashboard/admin-sistema");
     else if (rol === "admin_centro") router.replace("/dashboard/admin-centro");
     else router.replace("/dashboard/usuario-operativo");
+  }
+
+  // =============================
+  // 🔐 iniciar setup 2FA
+  // =============================
+  async function start2FASetup() {
+    const res = await fetch("/api/auth/2fa/setup", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({}),
+    });
+
+    const data = await res.json();
+    setQr2FA(data.qr);
+    setShowSetup2FA(true);
+  }
+
+  // =============================
+  // 🔐 confirmar setup 2FA
+  // =============================
+  async function confirm2FASetup() {
+    setError("");
+
+    const res = await fetch("/api/auth/2fa/setup", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        token: twoFactorCode,
+      }),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      setError(data.message || "Código incorrecto");
+      return;
+    }
+
+    setShowSetup2FA(false);
+    setTwoFactorCode("");
+    setTwoFactorRequired(false);
+
+    await onSubmit(new Event("submit"));
   }
 
   return (
@@ -37,20 +101,92 @@ export default function LoginPage() {
       <div className="login-left">
         <form onSubmit={onSubmit} className="login-form">
           <h1 className="login-title">Bienvenido</h1>
+
           <label className="label">Usuario</label>
-          <input className="input" value={usuario} onChange={e=>setUsuario(e.target.value)} placeholder="Usuario" />
+          <input
+            className="input"
+            value={usuario}
+            onChange={(e) => setUsuario(e.target.value)}
+            placeholder="Usuario"
+          />
+
           <label className="label">Contraseña</label>
-          <input className="input" type="password" value={password} onChange={e=>setPassword(e.target.value)} placeholder="Contraseña" />
-          {error && <p style={{color:"#b91c1c",marginTop:8}}>{error}</p>}
-          <button className="btn-primary" disabled={loading} style={{marginTop:14}}>
+          <input
+            className="input"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="Contraseña"
+          />
+
+          {twoFactorRequired && (
+            <>
+              <label className="label">Código Authenticator</label>
+              <input
+                className="input"
+                value={twoFactorCode}
+                onChange={(e) => setTwoFactorCode(e.target.value)}
+                placeholder="123456"
+                maxLength={6}
+              />
+            </>
+          )}
+
+          {error && (
+            <p style={{ color: "#b91c1c", marginTop: 8 }}>{error}</p>
+          )}
+
+          <button
+            className="btn-primary"
+            disabled={loading}
+            style={{ marginTop: 14 }}
+          >
             {loading ? "Ingresando..." : "Iniciar Sesión"}
           </button>
         </form>
       </div>
+
       <div className="login-right">
-        {/* Logo (usa tu imagen) */}
         <Image src="/logo.jpg" alt="DK" width={300} height={300} />
       </div>
+
+      {/* 🔐 MODAL SETUP 2FA */}
+      {showSetup2FA && (
+        <div className="modal">
+          <div className="modal-content">
+            <h3>Configurar Autenticador</h3>
+
+            <p style={{ marginBottom: 12 }}>
+              Escanea el código QR con Google Authenticator, Authy u otra app.
+            </p>
+
+            <img
+              src={qr2FA}
+              alt="QR Authenticator"
+              style={{ display: "block", margin: "0 auto 16px" }}
+            />
+
+            <label className="label">Código generado</label>
+            <input
+              className="input"
+              value={twoFactorCode}
+              onChange={(e) => setTwoFactorCode(e.target.value)}
+              placeholder="123456"
+              maxLength={6}
+            />
+
+            {error && (
+              <p className="error-text" style={{ textAlign: "center" }}>
+                {error}
+              </p>
+            )}
+
+            <button className="submit-btn" onClick={confirm2FASetup}>
+              Activar autenticador
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

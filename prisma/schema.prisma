@@ -61,6 +61,9 @@ model usuarios {
   area                area?                 @map("area")
   id_centro_comercial Int?                  @map("id_centro_comercial")
 
+  two_factor_enabled  Boolean               @default(false)
+  two_factor_secret   String?               
+
   centro_comercial    centros_comerciales?  @relation(fields: [id_centro_comercial], references: [id_centro_comercial])
 
   historial_incidentes historial_incidentes[]
