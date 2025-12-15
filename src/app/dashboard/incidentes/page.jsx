@@ -187,7 +187,7 @@ export default function IncidentesPage() {
         },
         { background: true } // 👈 no mostramos "Filtrando..."
       );
-    }, 15000);
+    }, 5000);
 
     return () => clearInterval(interval);
   }, [rol, filtrosAplicados]);

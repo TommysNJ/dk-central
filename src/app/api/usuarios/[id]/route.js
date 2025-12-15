@@ -26,6 +26,9 @@ export async function PUT(req, { params }) {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const telefonoRegex = /^09\d{8}$/;
 
+  // 🔒 Validación contraseña segura
+  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9])[^\s]{8,}$/;
+
   if (!nombre || !correo || !telefono || !usuario || !rol) {
     return NextResponse.json(
       { message: "Campos obligatorios faltantes" },
@@ -47,10 +50,13 @@ export async function PUT(req, { params }) {
     );
   }
 
-  // Validar longitud contraseña si se envía una nueva
-  if (password && password.length < 8) {
+  // 🔒 Validar contraseña segura si se envía una nueva
+  if (password && !passwordRegex.test(password)) {
     return NextResponse.json(
-      { message: "La contraseña debe tener al menos 8 caracteres." },
+      {
+        message:
+          "La contraseña debe tener mínimo 8 caracteres, una mayúscula, una minúscula, un número y un carácter especial.",
+      },
       { status: 400 }
     );
   }

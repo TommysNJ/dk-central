@@ -91,3 +91,45 @@ export async function sendUserCreatedEmail({
     html,
   });
 }
+
+/**
+ * ===============================
+ * Enviar correo recuperación contraseña
+ * ===============================
+ */
+export async function sendPasswordResetEmail({
+  to,
+  nombre,
+  resetUrl,
+}) {
+  const fromEmail = process.env.SMTP_USER;
+
+  const html = `
+    <div style="font-family: Arial, sans-serif; line-height: 1.6">
+      <h2>Recuperación de contraseña</h2>
+
+      <p>Hola <strong>${nombre}</strong>,</p>
+
+      <p>Solicitaste restablecer tu contraseña.</p>
+
+      <p>
+        <a href="${resetUrl}" target="_blank">
+          Restablecer contraseña
+        </a>
+      </p>
+
+      <p>Este enlace expira en 15 minutos.</p>
+
+      <p style="font-size:12px;color:#666">
+        Si no solicitaste esto, ignora este mensaje.
+      </p>
+    </div>
+  `;
+
+  await transporter.sendMail({
+    from: `"Soporte DKMS" <${fromEmail}>`,
+    to,
+    subject: "Recuperación de contraseña",
+    html,
+  });
+}

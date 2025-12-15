@@ -44,6 +44,8 @@ export async function POST(req) {
   // 🔒 Validación formato correo
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const telefonoRegex = /^09\d{8}$/;
+  // 🔒 Validación contraseña segura
+  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9])[^\s]{8,}$/;
   if (session instanceof NextResponse) return session;
 
   const data = await req.json();
@@ -89,10 +91,13 @@ export async function POST(req) {
     );
   }
 
-  // 🔒 Validación longitud contraseña
-  if (!password || password.length < 8) {
+  // 🔒 Validación contraseña segura
+  if (!password || !passwordRegex.test(password)) {
     return NextResponse.json(
-      { message: "La contraseña debe tener al menos 8 caracteres." },
+      {
+        message:
+          "La contraseña debe tener mínimo 8 caracteres, una mayúscula, una minúscula, un número y un carácter especial.",
+      },
       { status: 400 }
     );
   }
