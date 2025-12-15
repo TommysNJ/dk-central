@@ -64,6 +64,11 @@ model usuarios {
   two_factor_enabled  Boolean               @default(false)
   two_factor_secret   String?               
 
+  reset_password_token     String?
+  reset_password_expires   DateTime?
+
+  must_change_password Boolean              @default(true)
+
   centro_comercial    centros_comerciales?  @relation(fields: [id_centro_comercial], references: [id_centro_comercial])
 
   historial_incidentes historial_incidentes[]

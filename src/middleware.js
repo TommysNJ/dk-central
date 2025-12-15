@@ -22,6 +22,30 @@ export function middleware(req) {
 
   const rol = session.rol;
 
+  // ==========================================
+  // 🔐 BLOQUEO POR CAMBIO OBLIGATORIO DE CLAVE
+  // ==========================================
+  if (session.must_change_password) {
+    const allow =
+      pathname === "/dashboard/admin-sistema" ||
+      pathname === "/dashboard/admin-centro" ||
+      pathname === "/dashboard/usuario-operativo";
+
+    if (!allow) {
+      if (rol === "admin_sistema") {
+        return NextResponse.redirect(new URL("/dashboard/admin-sistema", req.url));
+      }
+      if (rol === "admin_centro") {
+        return NextResponse.redirect(new URL("/dashboard/admin-centro", req.url));
+      }
+      if (rol === "usuario_operativo") {
+        return NextResponse.redirect(
+          new URL("/dashboard/usuario-operativo", req.url)
+        );
+      }
+    }
+  }
+
   // === REGLAS POR ROL ===
 
   // ⭐ ADMIN SISTEMA 

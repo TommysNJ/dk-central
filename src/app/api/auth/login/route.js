@@ -82,6 +82,7 @@ export async function POST(req) {
       rol: user.rol,
       area: user.area,
       id_centro_comercial: user.id_centro_comercial,
+      must_change_password: user.must_change_password,
     });
 
     const res = NextResponse.json({ message: "Autenticado", rol: user.rol });

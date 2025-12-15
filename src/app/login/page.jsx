@@ -14,6 +14,12 @@ export default function LoginPage() {
   const [showSetup2FA, setShowSetup2FA] = useState(false);
   const [qr2FA, setQr2FA] = useState("");
 
+  // 🔑 Recuperar contraseña (RESTAURADO)
+  const [showRecover, setShowRecover] = useState(false);
+  const [recoverEmail, setRecoverEmail] = useState("");
+  const [recoverMsg, setRecoverMsg] = useState("");
+  const [recoverSuccess, setRecoverSuccess] = useState(false);
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -96,6 +102,28 @@ export default function LoginPage() {
     await onSubmit(new Event("submit"));
   }
 
+  // =============================
+  // 🔑 enviar correo recuperación
+  // =============================
+  async function sendRecoverEmail() {
+    setRecoverMsg("");
+    setRecoverSuccess(false);
+
+    const res = await fetch("/api/auth/password/forgot", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ correo: recoverEmail }),
+    });
+
+    const data = await res.json();
+
+    setRecoverMsg(data.message);
+
+    if (data.exists) {
+      setRecoverSuccess(true); // 👈 ocultará el botón
+    }
+  }
+
   return (
     <div className="login-wrap">
       <div className="login-left">
@@ -131,6 +159,19 @@ export default function LoginPage() {
               />
             </>
           )}
+
+          {/* 🔑 Recuperar contraseña (MISMO LUGAR QUE PEDISTE) */}
+          <p
+            className="label"
+            style={{ cursor: "pointer", textAlign: "right" }}
+            onClick={() => {
+              setRecoverEmail("");
+              setRecoverMsg("");
+              setShowRecover(true);
+            }}
+          >
+            ¿Olvidaste tu contraseña?
+          </p>
 
           {error && (
             <p style={{ color: "#b91c1c", marginTop: 8 }}>{error}</p>
@@ -184,6 +225,43 @@ export default function LoginPage() {
             <button className="submit-btn" onClick={confirm2FASetup}>
               Activar autenticador
             </button>
+          </div>
+        </div>
+      )}
+
+      {/* 🔑 MODAL RECUPERAR CONTRASEÑA (RESTAURADO) */}
+      {showRecover && (
+        <div className="modal">
+          <div className="modal-content">
+            <button
+              className="close-btn"
+              onClick={() => setShowRecover(false)}
+            >
+              ✖
+            </button>
+
+            <h3>Recuperar contraseña</h3>
+
+            <label className="label">Correo electrónico</label>
+            <input
+              className="input"
+              type="email"
+              value={recoverEmail}
+              onChange={(e) => setRecoverEmail(e.target.value)}
+              placeholder="correo@ejemplo.com"
+            />
+
+            {recoverMsg && (
+              <p className="fade-in" style={{ textAlign: "center" }}>
+                {recoverMsg}
+              </p>
+            )}
+
+            {!recoverSuccess && (
+              <button className="submit-btn" onClick={sendRecoverEmail}>
+                Enviar
+              </button>
+            )}
           </div>
         </div>
       )}
