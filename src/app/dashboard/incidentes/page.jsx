@@ -612,7 +612,10 @@ export default function IncidentesPage() {
                             cambiarEstadoSelect(item, e.target.value)
                           }
                         >
-                          <option value="revisado">Revisado</option>
+                          {/* Solo mostrar Revisado si aún está en revisado */}
+                          {item.estado === "revisado" && (
+                            <option value="revisado">Revisado</option>
+                          )}
                           <option value="en_proceso">En Proceso</option>
                           <option value="completado">Completado</option>
                         </select>
