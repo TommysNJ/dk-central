@@ -15,7 +15,7 @@ export async function PUT(req, { params }) {
 
   const { id } = await params;
   const body = await req.json();
-  const { estado, observaciones } = body;
+  let { estado, observaciones } = body;
 
   // Validar estado si viene
   const allowedEstados = ["revisado", "en_proceso", "completado"];
@@ -50,7 +50,7 @@ export async function PUT(req, { params }) {
       );
     }
 
-    // 🔒 Validar que el usuario pertenece al mismo centro y área
+    // 🔒 Validar centro y área
     if (
       incidente.mensaje_limpio.id_centro_comercial !==
         session.id_centro_comercial ||
@@ -62,10 +62,44 @@ export async function PUT(req, { params }) {
       );
     }
 
-    // Construir data de actualización
+        // =============================
+    // 🔥 BLOQUEO DE REGRESIÓN DE ESTADO
+    // =============================
+    // No permitir volver de EN_PROCESO a REVISADO
+    if (
+      incidente.estado === "en_proceso" &&
+      estado === "revisado"
+    ) {
+      return NextResponse.json(
+        { message: "No se puede volver al estado revisado" },
+        { status: 400 }
+      );
+    }
+
+    // =============================
+    // 🔥 LÓGICA NUEVA (SIN CAMBIAR ENUMS)
+    // =============================
+
     const dataUpdate = {};
 
-    if (estado) {
+    // Observaciones finales
+    const nuevasObservaciones =
+      typeof observaciones === "string"
+        ? observaciones
+        : incidente.observaciones || "";
+
+    // Estado base
+    let nuevoEstadoFinal = estado ?? incidente.estado;
+
+    // 👉 CASO CLAVE:
+    // Si está en REVISADO y se guarda observación → pasa a EN_PROCESO automáticamente
+    if (
+      incidente.estado === "revisado" &&
+      typeof observaciones === "string"
+    ) {
+      nuevoEstadoFinal = "en_proceso";
+      dataUpdate.estado = "en_proceso";
+    } else if (estado) {
       dataUpdate.estado = estado;
     }
 
@@ -80,40 +114,26 @@ export async function PUT(req, { params }) {
       );
     }
 
-        // 👉 Detectar si realmente hay cambios para registrar historial
-    const nuevoEstado = estado ?? incidente.estado;
-    const nuevasObservaciones =
-      typeof observaciones === "string"
-        ? observaciones
-        : incidente.observaciones || "";
-
-    const hayCambioEstado = nuevoEstado !== incidente.estado;
+    // 👉 Detectar cambios reales
+    const hayCambioEstado = nuevoEstadoFinal !== incidente.estado;
     const hayCambioObs =
       (incidente.observaciones || "") !== nuevasObservaciones;
 
     const debeRegistrarHistorial = hayCambioEstado || hayCambioObs;
 
-    // 🔧 Helper de fecha/hora en hora Ecuador (MISMA LÓGICA QUE MENSAJES_LIMPIOS)
+    // 🔧 Helper fecha/hora (MISMA LÓGICA QUE YA TENÍAS)
     function buildFechaYHoraCambio() {
-      // Hora actual (normalmente en UTC en el servidor)
       const ahora = new Date();
-
-      // ⏰ Convertir a hora Ecuador (UTC-5)
       const ahoraEcuador = new Date(
         ahora.getTime() - 5 * 60 * 60 * 1000
       );
 
-      // 📅 FECHA COMPLETA (DateTime) en hora Ecuador
       const fechaCompleta = new Date(ahoraEcuador.getTime());
-
-      // 📌 FECHA SOLO (DATE) - sin hora
       const fechaCambio = new Date(
         ahoraEcuador.getFullYear(),
         ahoraEcuador.getMonth(),
         ahoraEcuador.getDate()
       );
-
-      // 🕒 HORA (HH:mm:ss) usando toISOString como en mensajes_limpios
       const horaCambio = ahoraEcuador
         .toISOString()
         .split("T")[1]
@@ -124,9 +144,10 @@ export async function PUT(req, { params }) {
 
     let updated;
 
-    // 🔄 Usar transacción para mantener consistencia
+    // 🔄 Transacción
     if (debeRegistrarHistorial) {
-      const { fechaCompleta, fechaCambio, horaCambio } = buildFechaYHoraCambio();
+      const { fechaCompleta, fechaCambio, horaCambio } =
+        buildFechaYHoraCambio();
 
       const [updatedResult] = await prisma.$transaction([
         prisma.mensajes_clasificados.update({
@@ -140,8 +161,8 @@ export async function PUT(req, { params }) {
         prisma.historial_incidentes.create({
           data: {
             id_mensaje_clasificado: incidente.id_mensaje_clasificado,
-            id_usuario: session.id_usuario, // 🔥 debe venir del token/session
-            estado: nuevoEstado,
+            id_usuario: session.id_usuario,
+            estado: nuevoEstadoFinal,
             observaciones: nuevasObservaciones || null,
             fecha: fechaCompleta,
             fecha_cambio: fechaCambio,
@@ -152,7 +173,6 @@ export async function PUT(req, { params }) {
 
       updated = updatedResult;
     } else {
-      // No hay cambios reales, solo actualizar (por si acaso)
       updated = await prisma.mensajes_clasificados.update({
         where: { id_mensaje_clasificado: Number(id) },
         data: dataUpdate,
