@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import "@/styles/usuarios.css";
 import "@/styles/reportes.css";
 
@@ -17,6 +18,39 @@ export default function ResumenesPage() {
   const [loadingResumen, setLoadingResumen] = useState(false);
   const [errorResumen, setErrorResumen] = useState("");
   const [resumenIA, setResumenIA] = useState(null);
+
+  // ✅ NUEVO (solo lo necesario)
+  const [editableResumen, setEditableResumen] = useState(false);
+  const [mostrarGuardar, setMostrarGuardar] = useState(false);
+  const [textoResumen, setTextoResumen] = useState("");
+  const [faltantesResumen, setFaltantesResumen] = useState([]);
+
+  // ✅ NUEVO: modales
+  const [faltantesModal, setFaltantesModal] = useState({
+    open: false,
+    message: "",
+    agrupados: [],
+  });
+
+  const [successModal, setSuccessModal] = useState("");
+
+  // ✅ NUEVO: textarea auto height
+  const textareaRef = useRef(null);
+
+  function autoResizeTextarea() {
+    const el = textareaRef.current;
+    if (!el) return;
+
+    // reset para recalcular correctamente
+    el.style.height = "auto";
+
+    // tope máximo (px)
+    const MAX_HEIGHT = 900;
+
+    const next = Math.min(el.scrollHeight, MAX_HEIGHT);
+    el.style.height = `${next}px`;
+    el.style.overflowY = el.scrollHeight > MAX_HEIGHT ? "auto" : "hidden";
+  }
 
   useEffect(() => {
     async function init() {
@@ -36,6 +70,53 @@ export default function ResumenesPage() {
     init();
   }, []);
 
+  // ✅ Ajustar alto cuando cambia el texto (resumen generado o editado)
+  useEffect(() => {
+    autoResizeTextarea();
+  }, [textoResumen]);
+
+  // ================================
+  // ✅ NUEVO: GUARDAR RESUMEN (usuario_operativo)
+  // ================================
+  async function guardarResumen() {
+    setErrorResumen("");
+
+    if (!fechaResumen) {
+      setErrorResumen("Debe seleccionar una fecha.");
+      return;
+    }
+
+    setLoadingResumen(true);
+
+    try {
+      const res = await fetch("/api/reportes/resumen-diario", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          fecha: fechaResumen,
+          resumen: textoResumen || "",
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setErrorResumen(data.message || "Error guardando el resumen.");
+      } else {
+        // 🔥 Una vez guardado, ya no se debe editar ni mostrar botón
+        setEditableResumen(false);
+        setMostrarGuardar(false);
+
+        // ✅ Modal éxito
+        setSuccessModal("guardado");
+      }
+    } catch {
+      setErrorResumen("Error de conexión al guardar el resumen.");
+    }
+
+    setLoadingResumen(false);
+  }
+
   // ================================
   // GENERAR RESUMEN IA (AHORA CON FORM)
   // ================================
@@ -44,6 +125,15 @@ export default function ResumenesPage() {
 
     setErrorResumen("");
     setResumenIA(null);
+
+    // ✅ reset UI resumen
+    setEditableResumen(false);
+    setMostrarGuardar(false);
+    setTextoResumen("");
+    setFaltantesResumen([]);
+
+    // ✅ cerrar modales
+    setFaltantesModal({ open: false, message: "", agrupados: [] });
 
     if (!fechaResumen) {
       setErrorResumen("Debe seleccionar una fecha.");
@@ -64,10 +154,34 @@ export default function ResumenesPage() {
       });
 
       const data = await res.json();
+
       if (!res.ok) {
-        setErrorResumen(data.message || "Error generando resumen IA.");
+        const faltantes = Array.isArray(data.faltantes) ? data.faltantes : [];
+        setFaltantesResumen(faltantes);
+
+        // ✅ Si es caso de faltantes: SOLO modal, NO panel
+        if (faltantes.length > 0) {
+          setFaltantesModal({
+            open: true,
+            message: data.message || "",
+            agrupados: Array.isArray(data.faltantesAgrupados)
+              ? data.faltantesAgrupados
+              : [],
+          });
+        } else {
+          // ✅ Errores normales sí van al panel
+          setErrorResumen(data.message || "Error generando resumen IA.");
+        }
       } else {
         setResumenIA(data.resumen);
+        setTextoResumen(data.resumen || "");
+
+        // ✅ editable solo cuando backend diga editable:true
+        const editable = !!data.editable;
+        setEditableResumen(editable);
+
+        // ✅ botón guardar solo cuando es editable (usuario operativo) y resumen no guardado
+        setMostrarGuardar(editable);
       }
     } catch {
       setErrorResumen("Error de conexión con el generador IA.");
@@ -87,30 +201,30 @@ export default function ResumenesPage() {
 
     // Centro
     if (rol === "admin_sistema" && centroResumen) {
-        const c = centros.find(
+      const c = centros.find(
         (x) => x.id_centro_comercial === Number(centroResumen)
-        );
-        txtCentro = c ? c.nombre : "Centro seleccionado";
+      );
+      txtCentro = c ? c.nombre : "Centro seleccionado";
     }
 
     if (rol !== "admin_sistema") {
-        const c = centros.find(
+      const c = centros.find(
         (x) => x.id_centro_comercial === Number(idCentroUsuario)
-        );
-        txtCentro = c ? c.nombre : "Centro asignado";
+      );
+      txtCentro = c ? c.nombre : "Centro asignado";
     }
 
     // Área
     if (rol === "usuario_operativo") {
-        txtArea = areaUsuario; 
+      txtArea = areaUsuario;
     } else if (areaResumen) {
-        txtArea = areaResumen;
+      txtArea = areaResumen;
     }
 
     return `Centro Comercial: ${txtCentro} | Área: ${txtArea} | Fecha: ${formatearFecha(
-        fechaResumen
+      fechaResumen
     )}`;
-    }
+  }
 
   if (!rol) return <p>Cargando...</p>;
 
@@ -182,6 +296,8 @@ export default function ResumenesPage() {
           {errorResumen && (
             <p className="error-text report-error">{errorResumen}</p>
           )}
+
+          {/* ✅ YA NO MOSTRAMOS FALTANTES AQUÍ (ahora van solo en modal) */}
         </form>
       </div>
 
@@ -196,7 +312,114 @@ export default function ResumenesPage() {
           </p>
         </div>
 
-        {resumenIA && <p className="report-body">{resumenIA}</p>}
+        {/* ✅ NUEVO: si hay resumen, mostrar textarea (editable o no) + botón guardar solo si aplica */}
+        {resumenIA && (
+          <>
+            <div className="resumenes-textarea-wrap">
+              <textarea
+                ref={textareaRef}
+                className="resumenes-textarea input"
+                value={textoResumen}
+                onChange={(e) => {
+                  setTextoResumen(e.target.value);
+                  autoResizeTextarea();
+                }}
+                disabled={!editableResumen}
+              />
+            </div>
+
+            {mostrarGuardar && (
+              <div className="resumenes-actions">
+                <button
+                  className="submit-btn resumenes-guardar-btn"
+                  onClick={guardarResumen}
+                  disabled={loadingResumen}
+                >
+                  {loadingResumen ? "Guardando..." : "Guardar"}
+                </button>
+              </div>
+            )}
+          </>
+        )}
+      </div>
+
+      {/* ✅ Modal faltantes */}
+      {faltantesModal.open &&
+        createPortal(
+          <InfoModal
+            title="Faltan resúmenes"
+            message={faltantesModal.message}
+            faltantesAgrupados={faltantesModal.agrupados}
+            onClose={() =>
+              setFaltantesModal({ open: false, message: "", agrupados: [] })
+            }
+          />,
+          document.body
+        )}
+
+      {/* ✅ Modal éxito guardar */}
+      {successModal &&
+        createPortal(
+          <SuccessModal
+            mode={successModal}
+            onClose={() => setSuccessModal("")}
+          />,
+          document.body
+        )}
+    </div>
+  );
+}
+
+function SuccessModal({ mode, onClose }) {
+  let mensaje = "";
+  if (mode === "guardado") mensaje = "Resumen guardado con éxito.";
+
+  return (
+    <div className="modal success-modal">
+      <div className="modal-content success-content">
+        <h3>{mensaje}</h3>
+        <button className="submit-btn" onClick={onClose}>
+          Aceptar
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function InfoModal({ title, message, faltantesAgrupados, onClose }) {
+  return (
+    <div className="modal">
+      <div className="modal-content resumenes-info-modal">
+        <button className="close-btn" onClick={onClose}>
+          ✖
+        </button>
+        <h3 className="resumenes-modal-title">{title}</h3>
+
+        {/* ✅ Texto informativo */}
+        {message && <p className="resumenes-modal-text-info">{message}</p>}
+
+        {/* ✅ Separar por centro comercial */}
+        {Array.isArray(faltantesAgrupados) && faltantesAgrupados.length > 0 && (
+          <div className="resumenes-faltantes-list">
+            {faltantesAgrupados.map((c) => (
+              <div
+                className="resumenes-faltantes-centro"
+                key={`${c.id_centro_comercial}-${c.fecha}`}
+              >
+                <div className="resumenes-faltantes-centro-title">
+                  {c.centro}
+                </div>
+                <div className="resumenes-faltantes-areas">
+                  {Array.isArray(c.areas) ? c.areas.join(", ") : ""}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        <button className="submit-btn" onClick={onClose}>
+          Aceptar
+        </button>
       </div>
     </div>
   );
