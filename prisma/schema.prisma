@@ -43,6 +43,7 @@ model centros_comerciales {
 
   usuarios             usuarios[]
   mensajes_limpios     mensajes_limpios[]
+  resumenes_diarios    resumenes_diarios[]
 
   @@map("centros_comerciales")
 }
@@ -168,4 +169,22 @@ model historial_incidentes {
   mensaje_clasificado    mensajes_clasificados  @relation(fields: [id_mensaje_clasificado], references: [id_mensaje_clasificado])
 
   @@map("historial_incidentes")
+}
+
+
+/// =============================
+/// TABLA: resumenes_diarios
+/// =============================
+model resumenes_diarios {
+  id_resumen           Int                  @id @default(autoincrement()) @map("id_resumen")
+  fecha                DateTime             @db.Date @map("fecha")
+  id_centro_comercial  Int                  @map("id_centro_comercial")
+  centro_comercial     centros_comerciales  @relation(fields: [id_centro_comercial], references: [id_centro_comercial])
+  area                 area                 @map("area")
+  resumen              String               @db.Text @map("resumen")
+
+
+  @@unique([fecha, id_centro_comercial, area], map: "unique_resumen_por_dia_centro_area")
+  @@index([id_centro_comercial, area, fecha], map: "idx_resumenes_centro_area_fecha")
+  @@map("resumenes_diarios")
 }

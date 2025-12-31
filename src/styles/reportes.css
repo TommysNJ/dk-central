@@ -143,3 +143,109 @@
   margin: 0 auto 4px auto; /* centrado dentro del card */
   text-align: justify;     /* que se lea tipo informe */
 }
+
+/* ================================
+   ✅ Resúmenes: textarea grande + centrado
+   ================================ */
+.resumenes-textarea-wrap {
+  display: flex;
+  justify-content: center;
+}
+
+.resumenes-textarea {
+  min-height: 220px;   /* base bonita */
+  max-width: 900px;
+  width: 100%;
+  font-size: 18px;
+  line-height: 1.7;
+  resize: none;        /* evita que el usuario lo “rompa” manualmente */
+}
+
+/* ================================
+   ✅ Resúmenes: acciones (botón guardar) abajo derecha
+   ================================ */
+.resumenes-actions {
+  max-width: 900px;      /* mismo ancho que el textarea */
+  width: 100%;
+  margin: 10px auto 0;   /* centra el contenedor igual que el textarea */
+  display: flex;
+  justify-content: flex-end; /* botón a la derecha del bloque */
+}
+
+.resumenes-guardar-btn {
+  width: auto;
+  padding: 10px 18px;
+}
+
+/* ================================
+   ✅ Modal faltantes: texto
+   ================================ */
+.resumenes-modal-text {
+  font-size: 14px;
+  color: #334155;
+  text-align: center;
+  white-space: pre-line; /* respeta saltos de línea del backend */
+  margin-bottom: 10px;
+}
+
+/* ================================
+   ✅ Modal informativo de faltantes
+   ================================ */
+.resumenes-info-modal {
+  width: 520px;
+  max-width: 92%;
+}
+
+/* Título más informativo */
+.resumenes-modal-title {
+  color: #0f172a;
+}
+
+/* Texto informativo (tipo “aviso”) */
+.resumenes-modal-text-info {
+  background: #eef6ff;
+  border: 1px solid #cfe6ff;
+  color: #0b3b74;
+  border-radius: 12px;
+  padding: 10px 12px;
+  font-size: 13px;
+  text-align: center;
+  white-space: pre-line;
+  margin-bottom: 12px;
+}
+
+/* Lista por centro */
+.resumenes-faltantes-list {
+  margin-top: 6px;
+  margin-bottom: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Bloque por centro con separador visual */
+.resumenes-faltantes-centro {
+  border-top: 1px solid #e2e8f0;
+  padding-top: 10px;
+}
+
+/* Primer bloque sin línea extra arriba */
+.resumenes-faltantes-centro:first-child {
+  border-top: none;
+  padding-top: 0;
+}
+
+/* Nombre del centro */
+.resumenes-faltantes-centro-title {
+  font-weight: 700;
+  color: #0f172a;
+  text-align: left;
+  margin-bottom: 4px;
+}
+
+/* Áreas faltantes */
+.resumenes-faltantes-areas {
+  font-size: 13px;
+  color: #475569;
+  text-align: left;
+}
