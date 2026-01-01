@@ -202,7 +202,7 @@ export default function IncidentesPage() {
   function mapEstadoLabel(valor) {
     if (valor === "en_proceso") return "En Proceso";
     if (valor === "completado") return "Completado";
-    return "Revisado";
+    return "Nuevo";
   }
 
   function mapAreaLabel(valor) {
@@ -221,7 +221,7 @@ export default function IncidentesPage() {
   function estadoBadgeClass(estado) {
     if (estado === "completado") return "badge-completado";
     if (estado === "en_proceso") return "badge-en-proceso";
-    return "badge-revisado";
+    return "badge-nuevo";
   }
 
   function handleChangeArea(e) {
@@ -482,7 +482,7 @@ export default function IncidentesPage() {
             onChange={(e) => setFiltroEstado(e.target.value)}
           >
             <option value="">Estado</option>
-            <option value="revisado">Revisado</option>
+            <option value="nuevo">Nuevo</option>
             <option value="en_proceso">En Proceso</option>
             <option value="completado">Completado</option>
           </select>
@@ -612,9 +612,9 @@ export default function IncidentesPage() {
                             cambiarEstadoSelect(item, e.target.value)
                           }
                         >
-                          {/* Solo mostrar Revisado si aún está en revisado */}
-                          {item.estado === "revisado" && (
-                            <option value="revisado">Revisado</option>
+                          {/* Solo mostrar Nuevo si aún está en nuevo */}
+                          {item.estado === "nuevo" && (
+                            <option value="nuevo">Nuevo</option>
                           )}
                           <option value="en_proceso">En Proceso</option>
                           <option value="completado">Completado</option>

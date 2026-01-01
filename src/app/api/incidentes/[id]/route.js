@@ -18,7 +18,7 @@ export async function PUT(req, { params }) {
   let { estado, observaciones } = body;
 
   // Validar estado si viene
-  const allowedEstados = ["revisado", "en_proceso", "completado"];
+  const allowedEstados = ["nuevo", "en_proceso", "completado"];
   if (estado && !allowedEstados.includes(estado)) {
     return NextResponse.json(
       { message: "Estado inválido" },
@@ -65,13 +65,13 @@ export async function PUT(req, { params }) {
         // =============================
     // 🔥 BLOQUEO DE REGRESIÓN DE ESTADO
     // =============================
-    // No permitir volver de EN_PROCESO a REVISADO
+    // No permitir volver de EN_PROCESO a NUEVO
     if (
       incidente.estado === "en_proceso" &&
-      estado === "revisado"
+      estado === "nuevo"
     ) {
       return NextResponse.json(
-        { message: "No se puede volver al estado revisado" },
+        { message: "No se puede volver al estado nuevo" },
         { status: 400 }
       );
     }
@@ -92,9 +92,9 @@ export async function PUT(req, { params }) {
     let nuevoEstadoFinal = estado ?? incidente.estado;
 
     // 👉 CASO CLAVE:
-    // Si está en REVISADO y se guarda observación → pasa a EN_PROCESO automáticamente
+    // Si está en NUEVO y se guarda observación → pasa a EN_PROCESO automáticamente
     if (
-      incidente.estado === "revisado" &&
+      incidente.estado === "nuevo" &&
       typeof observaciones === "string"
     ) {
       nuevoEstadoFinal = "en_proceso";

@@ -26,7 +26,7 @@ enum area {
 }
 
 enum estado_incidente {
-  revisado
+  nuevo
   en_proceso
   completado
 }
@@ -141,7 +141,7 @@ model mensajes_clasificados {
 
   confianza              Float            @map("confianza")
 
-  estado                 estado_incidente @default(revisado) @map("estado")
+  estado                 estado_incidente @default(nuevo) @map("estado")
   observaciones          String?          @db.Text @map("observaciones")
 
   mensaje_limpio mensajes_limpios @relation(fields: [id_mensaje_limpio], references: [id_mensaje])

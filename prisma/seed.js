@@ -9,9 +9,9 @@ async function main() {
   // ==================================================
   // 1. ADMIN
   // ==================================================
-  const adminUsuario = "admin";
+  const adminUsuario = "Admin";
   const adminCorreo = "admin@dkmanagement.com";
-  const adminPassword = "admin123";
+  const adminPassword = "Admin12.";
   const hashedPassword = await bcrypt.hash(adminPassword, 10);
 
   const existingAdmin = await prisma.usuarios.findUnique({

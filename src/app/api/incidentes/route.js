@@ -7,7 +7,7 @@ import { authorize } from "@/lib/authorize";
  * Filtros (opcionales): centro, area, estado, fecha, tipo
  * - centro: id_centro_comercial (Int)
  * - area: valor enum de area (recepcion, seguridad, etc.)
- * - estado: revisado | en_proceso | completado
+ * - estado: nuevo | en_proceso | completado
  * - fecha: YYYY-MM-DD (se compara con fecha_envio_date)
  * - tipo: nombre del incidente (String, ej: "robo")
  */

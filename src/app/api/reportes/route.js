@@ -99,7 +99,7 @@ export async function GET(req) {
         area,
         total: 0,
         incidentesPorNombre: {},
-        estados: { revisado: 0, en_proceso: 0, completado: 0 },
+        estados: { nuevo: 0, en_proceso: 0, completado: 0 },
       });
     }
 
@@ -152,7 +152,7 @@ export async function GET(req) {
       mapaTipos.set(tipo, {
         tipo,
         total: 0,
-        estados: { revisado: 0, en_proceso: 0, completado: 0 },
+        estados: { nuevo: 0, en_proceso: 0, completado: 0 },
       });
     }
 
