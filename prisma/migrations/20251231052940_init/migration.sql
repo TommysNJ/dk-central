@@ -22,6 +22,11 @@ CREATE TABLE `usuarios` (
     `rol` ENUM('admin_sistema', 'admin_centro', 'usuario_operativo') NOT NULL,
     `area` ENUM('recepcion', 'administracion', 'mantenimiento', 'seguridad', 'mercadeo', 'sso') NULL,
     `id_centro_comercial` INTEGER NULL,
+    `two_factor_enabled` BOOLEAN NOT NULL DEFAULT false,
+    `two_factor_secret` VARCHAR(191) NULL,
+    `reset_password_token` VARCHAR(191) NULL,
+    `reset_password_expires` DATETIME(3) NULL,
+    `must_change_password` BOOLEAN NOT NULL DEFAULT true,
 
     UNIQUE INDEX `usuarios_correo_key`(`correo`),
     UNIQUE INDEX `usuarios_telefono_key`(`telefono`),
@@ -74,7 +79,7 @@ CREATE TABLE `mensajes_clasificados` (
     `id_mensaje_limpio` INTEGER NOT NULL,
     `id_incidente` INTEGER NOT NULL,
     `confianza` DOUBLE NOT NULL,
-    `estado` ENUM('revisado', 'en_proceso', 'completado') NOT NULL DEFAULT 'revisado',
+    `estado` ENUM('nuevo', 'en_proceso', 'completado') NOT NULL DEFAULT 'nuevo',
     `observaciones` TEXT NULL,
 
     UNIQUE INDEX `mensajes_clasificados_id_mensaje_limpio_key`(`id_mensaje_limpio`),
@@ -86,13 +91,26 @@ CREATE TABLE `historial_incidentes` (
     `id_historial` INTEGER NOT NULL AUTO_INCREMENT,
     `id_mensaje_clasificado` INTEGER NOT NULL,
     `id_usuario` INTEGER NOT NULL,
-    `estado` ENUM('revisado', 'en_proceso', 'completado') NOT NULL,
+    `estado` ENUM('nuevo', 'en_proceso', 'completado') NOT NULL,
     `observaciones` TEXT NULL,
     `fecha` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `fecha_cambio` DATE NULL,
     `hora_cambio` VARCHAR(191) NULL,
 
     PRIMARY KEY (`id_historial`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `resumenes_diarios` (
+    `id_resumen` INTEGER NOT NULL AUTO_INCREMENT,
+    `fecha` DATE NOT NULL,
+    `id_centro_comercial` INTEGER NOT NULL,
+    `area` ENUM('recepcion', 'administracion', 'mantenimiento', 'seguridad', 'mercadeo', 'sso') NOT NULL,
+    `resumen` TEXT NOT NULL,
+
+    INDEX `idx_resumenes_centro_area_fecha`(`id_centro_comercial`, `area`, `fecha`),
+    UNIQUE INDEX `unique_resumen_por_dia_centro_area`(`fecha`, `id_centro_comercial`, `area`),
+    PRIMARY KEY (`id_resumen`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- AddForeignKey
@@ -115,3 +133,6 @@ ALTER TABLE `historial_incidentes` ADD CONSTRAINT `historial_incidentes_id_usuar
 
 -- AddForeignKey
 ALTER TABLE `historial_incidentes` ADD CONSTRAINT `historial_incidentes_id_mensaje_clasificado_fkey` FOREIGN KEY (`id_mensaje_clasificado`) REFERENCES `mensajes_clasificados`(`id_mensaje_clasificado`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `resumenes_diarios` ADD CONSTRAINT `resumenes_diarios_id_centro_comercial_fkey` FOREIGN KEY (`id_centro_comercial`) REFERENCES `centros_comerciales`(`id_centro_comercial`) ON DELETE RESTRICT ON UPDATE CASCADE;

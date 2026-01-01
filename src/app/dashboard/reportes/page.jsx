@@ -65,7 +65,7 @@ export default function ReportesPage() {
       {
         en_proceso: "En Proceso",
         completado: "Completado",
-        revisado: "Revisado",
+        nuevo: "Nuevo",
       }[v] || "-"
     );
   }
