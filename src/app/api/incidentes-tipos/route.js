@@ -9,9 +9,13 @@ export async function GET(req) {
     "admin_centro",
     "usuario_operativo",
   ]);
+
   if (session instanceof NextResponse) return session;
 
   const tipos = await prisma.incidentes.findMany({
+    where: {
+      nombre: { not: "otros" }, 
+    },
     orderBy: { nombre: "asc" },
   });
 

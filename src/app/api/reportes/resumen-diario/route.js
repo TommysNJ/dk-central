@@ -267,21 +267,22 @@ export async function POST(req) {
     mensaje_limpio: {
       fecha_envio_date: fechaUTC,
     },
+    incidente: { nombre: { not: "otros" } },
   };
 
   if (session.rol === "admin_sistema") {
     if (centro) where.mensaje_limpio.id_centro_comercial = Number(centro);
-    if (area) where.incidente = { area };
+    if (area) where.incidente = { ...where.incidente, area };
   }
 
   if (session.rol === "admin_centro") {
     where.mensaje_limpio.id_centro_comercial = session.id_centro_comercial;
-    if (area) where.incidente = { area };
+    if (area) where.incidente = { ...where.incidente, area };
   }
 
   if (session.rol === "usuario_operativo") {
     where.mensaje_limpio.id_centro_comercial = session.id_centro_comercial;
-    where.incidente = { area: session.area };
+    where.incidente = { ...where.incidente, area: session.area };
   }
 
   // ============================================================

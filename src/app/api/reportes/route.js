@@ -50,18 +50,19 @@ export async function GET(req) {
     mensaje_limpio: {
       fecha_envio_date: { gte: fechaInicio, lte: fechaFin },
     },
+    incidente: { nombre: { not: "otros" } },
   };
 
   const centroId = centroStr ? Number(centroStr) : null;
   if (session.rol === "admin_sistema") {
     if (centroId) where.mensaje_limpio.id_centro_comercial = centroId;
-    if (areaParam) where.incidente = { area: areaParam };
+    if (areaParam) where.incidente = { ...where.incidente, area: areaParam };
   } else if (session.rol === "admin_centro") {
     where.mensaje_limpio.id_centro_comercial = session.id_centro_comercial;
-    if (areaParam) where.incidente = { area: areaParam };
+    if (areaParam) where.incidente = { ...where.incidente, area: areaParam };
   } else if (session.rol === "usuario_operativo") {
     where.mensaje_limpio.id_centro_comercial = session.id_centro_comercial;
-    where.incidente = { area: session.area };
+    where.incidente = { ...where.incidente, area: session.area };
   }
 
   // ==============================
