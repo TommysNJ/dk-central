@@ -65,6 +65,7 @@ async function main() {
 
     { nombre: "ruido excesivo", area: "administracion" },
     { nombre: "vehiculo mal estacionado", area: "seguridad" },
+    { nombre: "otros", area: "otros" },
   ];
 
   const incidentesCreados = {};

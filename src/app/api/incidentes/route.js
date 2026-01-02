@@ -29,10 +29,11 @@ export async function GET(req) {
 
   // 🔎 Construir filtros
   const where = {
-    // filtro por estado si viene
     ...(estado ? { estado } : {}),
     mensaje_limpio: {},
-    incidente: {},
+    incidente: {
+      nombre: { not: "otros" }, 
+    },
   };
 
   // 🎯 Restricciones por rol
@@ -60,7 +61,7 @@ export async function GET(req) {
 
   // filtro por tipo de incidente (nombre)
   if (tipo) {
-    where.incidente.nombre = tipo;
+    where.incidente.nombre = { equals: tipo, not: "otros" };
   }
 
   if (fecha) {

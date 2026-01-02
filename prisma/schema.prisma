@@ -23,6 +23,7 @@ enum area {
   seguridad
   mercadeo
   sso
+  otros
 }
 
 enum estado_incidente {

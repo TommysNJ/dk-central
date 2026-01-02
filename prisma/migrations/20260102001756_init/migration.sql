@@ -20,7 +20,7 @@ CREATE TABLE `usuarios` (
     `usuario` VARCHAR(191) NOT NULL,
     `password` VARCHAR(191) NOT NULL,
     `rol` ENUM('admin_sistema', 'admin_centro', 'usuario_operativo') NOT NULL,
-    `area` ENUM('recepcion', 'administracion', 'mantenimiento', 'seguridad', 'mercadeo', 'sso') NULL,
+    `area` ENUM('recepcion', 'administracion', 'mantenimiento', 'seguridad', 'mercadeo', 'sso', 'otros') NULL,
     `id_centro_comercial` INTEGER NULL,
     `two_factor_enabled` BOOLEAN NOT NULL DEFAULT false,
     `two_factor_secret` VARCHAR(191) NULL,
@@ -57,7 +57,7 @@ CREATE TABLE `mensajes_limpios` (
 CREATE TABLE `incidentes` (
     `id_incidente` INTEGER NOT NULL AUTO_INCREMENT,
     `nombre` VARCHAR(191) NOT NULL,
-    `area` ENUM('recepcion', 'administracion', 'mantenimiento', 'seguridad', 'mercadeo', 'sso') NOT NULL,
+    `area` ENUM('recepcion', 'administracion', 'mantenimiento', 'seguridad', 'mercadeo', 'sso', 'otros') NOT NULL,
 
     UNIQUE INDEX `incidentes_nombre_key`(`nombre`),
     PRIMARY KEY (`id_incidente`)
@@ -105,7 +105,7 @@ CREATE TABLE `resumenes_diarios` (
     `id_resumen` INTEGER NOT NULL AUTO_INCREMENT,
     `fecha` DATE NOT NULL,
     `id_centro_comercial` INTEGER NOT NULL,
-    `area` ENUM('recepcion', 'administracion', 'mantenimiento', 'seguridad', 'mercadeo', 'sso') NOT NULL,
+    `area` ENUM('recepcion', 'administracion', 'mantenimiento', 'seguridad', 'mercadeo', 'sso', 'otros') NOT NULL,
     `resumen` TEXT NOT NULL,
 
     INDEX `idx_resumenes_centro_area_fecha`(`id_centro_comercial`, `area`, `fecha`),

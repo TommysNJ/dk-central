@@ -62,7 +62,7 @@ def etiquetar_mensaje(texto, keywords):
             coincidencias.append(k)
 
     if not coincidencias:
-        return None, None, None, 0
+        return None, "otros", "otros", 0
 
     mejor = coincidencias[0]
 
