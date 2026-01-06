@@ -66,7 +66,8 @@ export function middleware(req) {
       pathname.startsWith("/dashboard/usuarios") ||
       pathname.startsWith("/dashboard/incidentes") ||
       pathname.startsWith("/dashboard/reportes") ||
-      pathname.startsWith("/dashboard/resumenes");
+      pathname.startsWith("/dashboard/resumenes") ||
+      pathname.startsWith("/dashboard/dashboards");
 
     if (allow) return NextResponse.next();
 
@@ -79,7 +80,8 @@ export function middleware(req) {
       pathname.startsWith("/dashboard/usuario-operativo") ||
       pathname.startsWith("/dashboard/incidentes") ||
       pathname.startsWith("/dashboard/reportes") ||
-      pathname.startsWith("/dashboard/resumenes");
+      pathname.startsWith("/dashboard/resumenes") ||
+      pathname.startsWith("/dashboard/dashboards");
 
     if (allow) return NextResponse.next();
 
