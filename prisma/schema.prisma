@@ -75,6 +75,9 @@ model usuarios {
 
   historial_incidentes historial_incidentes[]
 
+  resumenes_diarios    resumenes_diarios[]
+
+
   @@index([rol, id_centro_comercial], map: "idx_usuarios_rol_centro")
   @@index([usuario], map: "idx_usuarios_usuario")
   @@map("usuarios")
@@ -180,9 +183,13 @@ model resumenes_diarios {
   id_resumen           Int                  @id @default(autoincrement()) @map("id_resumen")
   fecha                DateTime             @db.Date @map("fecha")
   id_centro_comercial  Int                  @map("id_centro_comercial")
-  centro_comercial     centros_comerciales  @relation(fields: [id_centro_comercial], references: [id_centro_comercial])
   area                 area                 @map("area")
   resumen              String               @db.Text @map("resumen")
+  id_usuario           Int?                 @map("id_usuario")
+  fecha_actualizacion  DateTime             @default(now()) @updatedAt @map("fecha_actualizacion")
+
+  usuario              usuarios?            @relation(fields: [id_usuario], references: [id_usuario])
+  centro_comercial     centros_comerciales  @relation(fields: [id_centro_comercial], references: [id_centro_comercial])
 
 
   @@unique([fecha, id_centro_comercial, area], map: "unique_resumen_por_dia_centro_area")

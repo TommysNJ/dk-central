@@ -50,7 +50,7 @@ export async function GET(req) {
     mensaje_limpio: {
       fecha_envio_date: { gte: fechaInicio, lte: fechaFin },
     },
-    incidente: { nombre: { not: "otros" } },
+    incidente: {},
   };
 
   const centroId = centroStr ? Number(centroStr) : null;

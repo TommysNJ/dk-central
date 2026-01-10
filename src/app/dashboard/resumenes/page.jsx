@@ -89,12 +89,14 @@ export default function ResumenesPage() {
     setLoadingResumen(true);
 
     try {
-      const res = await fetch("/api/reportes/resumen-diario", {
+      const res = await fetch("/api/resumen-diario", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           fecha: fechaResumen,
           resumen: textoResumen || "",
+          area: areaResumen || null,   
+          centro: centroResumen || null, 
         }),
       });
 
@@ -103,9 +105,12 @@ export default function ResumenesPage() {
       if (!res.ok) {
         setErrorResumen(data.message || "Error guardando el resumen.");
       } else {
-        // 🔥 Una vez guardado, ya no se debe editar ni mostrar botón
-        setEditableResumen(false);
-        setMostrarGuardar(false);
+        // 🔥 usuario_operativo: una vez guardado, ya no se debe editar ni mostrar botón
+        // 🔥 admin_centro: siempre puede seguir editando y guardando
+        if (rol === "usuario_operativo") {
+          setEditableResumen(false);
+          setMostrarGuardar(false);
+        }
 
         // ✅ Modal éxito
         setSuccessModal("guardado");
@@ -143,7 +148,7 @@ export default function ResumenesPage() {
     setLoadingResumen(true);
 
     try {
-      const res = await fetch("/api/reportes/resumen-diario", {
+      const res = await fetch("/api/resumen-diario", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

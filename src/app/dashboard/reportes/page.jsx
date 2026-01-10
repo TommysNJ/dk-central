@@ -56,6 +56,7 @@ export default function ReportesPage() {
         seguridad: "Seguridad",
         mercadeo: "Mercadeo",
         sso: "SSO",
+        otros: "Otros",
       }[v] || "-"
     );
   }
