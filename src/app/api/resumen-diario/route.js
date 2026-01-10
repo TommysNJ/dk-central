@@ -10,6 +10,11 @@ const openai = new OpenAI({
 
 const BLOCK_SIZE = 120; // 🔥 cantidad de incidentes por bloque
 
+function nowEcuador() {
+  const now = new Date();
+  return new Date(now.getTime() - 5 * 60 * 60 * 1000);
+}
+
 // ============================
 // 🧠 Función auxiliar: resumen por bloques
 // ============================
@@ -90,7 +95,11 @@ Solo devuelve el párrafo final.
 // ============================
 // ✅ NUEVO: resumen global desde resúmenes guardados (para admins)
 // ============================
-async function resumenGlobalDesdeResumenesGuardados(resumenesGuardados, total, info) {
+async function resumenGlobalDesdeResumenesGuardados(
+  resumenesGuardados,
+  total,
+  info
+) {
   const prompt = `
 Eres un analista profesional de seguridad en centros comerciales.
 
@@ -233,7 +242,7 @@ export async function POST(req) {
         resumen: existente.resumen,
         filtros: info,
         resumenGuardado: true,
-        editable: false,
+        editable: session.rol === "admin_centro", // ✅ NUEVO: admin_centro SIEMPRE puede editar cuando filtra área específica
       });
     }
 
@@ -244,7 +253,9 @@ export async function POST(req) {
 
       return NextResponse.json(
         {
-          message: `Falta resumen de ${fecha}, ${c?.nombre || "Centro desconocido"}, ${targetArea} para poder realizar el resumen general.`,
+          message: `Falta resumen de ${fecha}, ${
+            c?.nombre || "Centro desconocido"
+          }, ${targetArea} para poder realizar el resumen general.`,
           filtros: info,
           faltantes: [
             {
@@ -431,9 +442,9 @@ export async function POST(req) {
         mensaje = faltantesAgrupados
           .map(
             (x) =>
-              `En ${x.centro || "Centro desconocido"} faltan resúmenes para: ${(x.areas || []).join(
-                ", "
-              )}.`
+              `En ${x.centro || "Centro desconocido"} faltan resúmenes para: ${(
+                x.areas || []
+              ).join(", ")}.`
           )
           .join("\n");
       }
@@ -537,12 +548,12 @@ export async function POST(req) {
 // ✅ GUARDAR RESUMEN (usuario_operativo)
 // ============================
 export async function PUT(req) {
-  const session = await authorize(req, ["usuario_operativo"]);
+  const session = await authorize(req, ["usuario_operativo", "admin_centro"]); // ✅ NUEVO
   if (session instanceof NextResponse) return session;
 
   const body = await req.json();
-  const { fecha, resumen } = body;
-
+  const { fecha, resumen, centro, area } = body; // ✅ NUEVO (area/centro usados por admin_centro)
+  
   if (!fecha) {
     return NextResponse.json(
       { message: "Debe seleccionar una fecha." },
@@ -562,32 +573,72 @@ export async function PUT(req) {
   const fechaUTC = new Date(Date.UTC(Number(y), Number(m) - 1, Number(d)));
 
   const centroId = session.id_centro_comercial;
-  const area = session.area;
 
-  // Si ya existe, NO se debe sobreescribir
+  // ✅ usuario_operativo: siempre su área
+  // ✅ admin_centro: debe venir un área específica en el body
+  const areaFinal =
+    session.rol === "usuario_operativo"
+      ? session.area
+      : area || null;
+
+  if (session.rol === "admin_centro" && !areaFinal) {
+    return NextResponse.json(
+      { message: "Debe seleccionar un área específica para editar el resumen." },
+      { status: 400 }
+    );
+  }
+
+  // Si ya existe, NO se debe sobreescribir (usuario_operativo)
+  // ✅ admin_centro sí puede actualizar
   const existente = await prisma.resumenes_diarios.findUnique({
     where: {
       fecha_id_centro_comercial_area: {
         fecha: fechaUTC,
         id_centro_comercial: centroId,
-        area,
+        area: areaFinal,
       },
     },
   });
 
+  // ✅ NUEVO: fecha/hora Ecuador (UTC-5)
+  const fechaEcuadorNow = nowEcuador();
+
   if (existente) {
-    return NextResponse.json(
-      { message: "El resumen ya existe en el sistema para ese día, centro y área." },
-      { status: 400 }
-    );
+    // 🔥 usuario_operativo no sobreescribe
+    if (session.rol === "usuario_operativo") {
+      return NextResponse.json(
+        { message: "El resumen ya existe en el sistema para ese día, centro y área." },
+        { status: 400 }
+      );
+    }
+
+    // ✅ admin_centro: actualizar siempre + guardar usuario
+    await prisma.resumenes_diarios.update({
+      where: {
+        fecha_id_centro_comercial_area: {
+          fecha: fechaUTC,
+          id_centro_comercial: centroId,
+          area: areaFinal,
+        },
+      },
+      data: {
+        resumen,
+        id_usuario: session.id_usuario, // ✅ NUEVO
+        fecha_actualizacion: fechaEcuadorNow,
+      },
+    });
+
+    return NextResponse.json({ message: "Resumen actualizado con éxito." });
   }
 
   await prisma.resumenes_diarios.create({
     data: {
       fecha: fechaUTC,
       id_centro_comercial: centroId,
-      area,
+      area: areaFinal,
       resumen,
+      id_usuario: session.id_usuario, // ✅ NUEVO
+      fecha_actualizacion: fechaEcuadorNow,
     },
   });
 

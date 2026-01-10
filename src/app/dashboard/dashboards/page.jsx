@@ -339,10 +339,31 @@ export default function DashboardsIncidentesPage() {
   }, [charts]);
 
   function heatBg(value, max) {
-    if (!max || max <= 0) return "rgba(99, 102, 241, 0.06)";
+    // 0 => verde fijo
+    if (!value || value <= 0) return "#22c55e"; // green-500
+
+    // si max es 0 o no viene, deja amarillo suave
+    if (!max || max <= 0) return "#fde047"; // yellow-300
+
     const t = Math.max(0, Math.min(1, value / max));
-    const alpha = 0.06 + t * 0.85;
-    return `rgba(99, 102, 241, ${alpha})`;
+
+    // Rangos por porcentaje del máximo
+    // 0-33%: amarillo, 33-66%: naranja, 66-100%: rojo
+    if (t < 0.33) {
+        // amarillo: suave -> fuerte
+        // yellow-200 -> yellow-500
+        return t < 0.165 ? "#fef08a" : "#eab308";
+    }
+
+    if (t < 0.66) {
+        // naranja: suave -> fuerte
+        // orange-200 -> orange-600
+        return t < 0.495 ? "#fed7aa" : "#ea580c";
+    }
+
+    // rojo: suave -> fuerte
+    // red-300 -> red-700
+    return t < 0.83 ? "#fca5a5" : "#b91c1c";
   }
 
   // ✅ Tooltips: evitar índice (0,1,2...) y mostrar label real
