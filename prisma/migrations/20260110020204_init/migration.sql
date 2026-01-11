@@ -107,6 +107,8 @@ CREATE TABLE `resumenes_diarios` (
     `id_centro_comercial` INTEGER NOT NULL,
     `area` ENUM('recepcion', 'administracion', 'mantenimiento', 'seguridad', 'mercadeo', 'sso', 'otros') NOT NULL,
     `resumen` TEXT NOT NULL,
+    `id_usuario` INTEGER NULL,
+    `fecha_actualizacion` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 
     INDEX `idx_resumenes_centro_area_fecha`(`id_centro_comercial`, `area`, `fecha`),
     UNIQUE INDEX `unique_resumen_por_dia_centro_area`(`fecha`, `id_centro_comercial`, `area`),
@@ -133,6 +135,9 @@ ALTER TABLE `historial_incidentes` ADD CONSTRAINT `historial_incidentes_id_usuar
 
 -- AddForeignKey
 ALTER TABLE `historial_incidentes` ADD CONSTRAINT `historial_incidentes_id_mensaje_clasificado_fkey` FOREIGN KEY (`id_mensaje_clasificado`) REFERENCES `mensajes_clasificados`(`id_mensaje_clasificado`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `resumenes_diarios` ADD CONSTRAINT `resumenes_diarios_id_usuario_fkey` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios`(`id_usuario`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `resumenes_diarios` ADD CONSTRAINT `resumenes_diarios_id_centro_comercial_fkey` FOREIGN KEY (`id_centro_comercial`) REFERENCES `centros_comerciales`(`id_centro_comercial`) ON DELETE RESTRICT ON UPDATE CASCADE;

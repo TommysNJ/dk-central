@@ -27,6 +27,16 @@ export async function GET(req) {
   const fecha = searchParams.get("fecha") || ""; // YYYY-MM-DD
   const tipo = searchParams.get("tipo") || ""; // nombre incidente
 
+  // ✅ NUEVO: si quiere filtrar por algo (centro/area/estado/tipo) debe enviar fecha
+  const wantsFilteringWithoutDate = Boolean((centro || area || estado || tipo) && !fecha);
+
+  if (wantsFilteringWithoutDate) {
+    return NextResponse.json(
+      { message: "Debe seleccionar una fecha para filtrar." },
+      { status: 400 }
+    );
+  }
+
   // 🔎 Construir filtros
   const where = {
     ...(estado ? { estado } : {}),
@@ -71,6 +81,28 @@ export async function GET(req) {
     const fechaUTC = new Date(Date.UTC(Number(y), Number(m) - 1, Number(d)));
 
     where.mensaje_limpio.fecha_envio_date = fechaUTC;
+  }
+
+  // ✅ Si el usuario NO envía ningún filtro, mantener vista por defecto: SOLO HOY
+  const hasAnyFilter = Boolean(centro || area || estado || fecha || tipo);
+
+  if (!hasAnyFilter) {
+    // 🇪🇨 Ecuador es UTC-5
+    const now = new Date();
+
+    // Convertimos a "fecha Ecuador"
+    const ecuDate = new Date(now.getTime() - 5 * 60 * 60 * 1000);
+
+    // Normalizamos a 00:00:00 UTC para que coincida con fecha_envio_date
+    const todayUTC = new Date(
+      Date.UTC(
+        ecuDate.getUTCFullYear(),
+        ecuDate.getUTCMonth(),
+        ecuDate.getUTCDate()
+      )
+    );
+
+    where.mensaje_limpio.fecha_envio_date = todayUTC;
   }
 
   try {

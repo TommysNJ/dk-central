@@ -15,6 +15,9 @@ export default function IncidentesPage() {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(false);
 
+  // ✅ NUEVO: error debajo del form, igual que ResumenesPage
+  const [errorIncidentes, setErrorIncidentes] = useState("");
+
   // Filtros (valores en los controles)
   const [filtroCentro, setFiltroCentro] = useState("");
   const [filtroArea, setFiltroArea] = useState("");
@@ -89,7 +92,7 @@ export default function IncidentesPage() {
           area: "",
           tipo: "",
           estado: "",
-          fecha: hoyStr,   // ⭐ Se envía al backend, pero NO al input
+          fecha: hoyStr, // ⭐ Se envía al backend, pero NO al input
         };
 
         setFiltrosAplicados(filtrosIniciales);
@@ -104,14 +107,7 @@ export default function IncidentesPage() {
   }, []);
 
   async function loadIncidentes(
-    {
-      rol,
-      centro,
-      area,
-      tipo,
-      estado,
-      fecha,
-    },
+    { rol, centro, area, tipo, estado, fecha },
     options = {}
   ) {
     const { background = false } = options;
@@ -119,6 +115,9 @@ export default function IncidentesPage() {
     if (!background) {
       setLoading(true);
     }
+
+    // ✅ NUEVO: limpiar error solo cuando es acción de usuario (no background)
+    if (!background) setErrorIncidentes("");
 
     try {
       const params = new URLSearchParams();
@@ -136,14 +135,31 @@ export default function IncidentesPage() {
       const url = query ? `/api/incidentes?${query}` : "/api/incidentes";
 
       const res = await fetch(url);
+
       if (res.ok) {
         setItems(await res.json());
-      } else {
-        setItems([]);
+        return true; // ✅ NUEVO: éxito
       }
+
+      // ✅ NUEVO: traer mensaje del backend
+      const data = await res.json().catch(() => ({}));
+      const msg = data.message || "Error al filtrar incidentes.";
+
+      // ✅ NUEVO: si es 400 (ej: falta fecha), mostrar error y NO borrar tabla
+      if (res.status === 400) {
+        if (!background) setErrorIncidentes(msg);
+        return false;
+      }
+
+      // otros errores: mostramos y limpiamos
+      if (!background) setErrorIncidentes(msg);
+      setItems([]);
+      return false;
     } catch (e) {
       console.error("Error cargando incidentes:", e);
+      if (!background) setErrorIncidentes("Error de conexión al cargar incidentes.");
       setItems([]);
+      return false;
     } finally {
       if (!background) {
         setLoading(false);
@@ -155,6 +171,9 @@ export default function IncidentesPage() {
     e.preventDefault();
     if (!rol) return;
 
+    // ✅ NUEVO: limpiar error al intentar filtrar
+    setErrorIncidentes("");
+
     const nuevosFiltros = {
       centro: filtroCentro,
       area: filtroArea,
@@ -163,13 +182,16 @@ export default function IncidentesPage() {
       fecha: filtroFecha,
     };
 
-    // Guardar filtros aplicados (para el auto-refresh)
-    setFiltrosAplicados(nuevosFiltros);
-
-    await loadIncidentes({
+    // ✅ NUEVO: primero intentamos filtrar; solo si OK guardamos filtrosAplicados
+    const ok = await loadIncidentes({
       rol,
       ...nuevosFiltros,
     });
+
+    if (ok) {
+      // Guardar filtros aplicados (para el auto-refresh)
+      setFiltrosAplicados(nuevosFiltros);
+    }
   }
 
   // ==========================
@@ -498,6 +520,11 @@ export default function IncidentesPage() {
             {loading ? "Filtrando..." : "Filtrar"}
           </button>
         </form>
+
+        {/* ✅ NUEVO: mismo patrón que ResumenesPage (debajo del form) */}
+        {errorIncidentes && (
+          <p className="error-text report-error">{errorIncidentes}</p>
+        )}
       </div>
 
       {/* ================= TABLA ================= */}
@@ -709,7 +736,7 @@ export default function IncidentesPage() {
               <h3>Historial del incidente</h3>
               {historialModal.incidente && (
                 <div className="historial-mensaje">
-                  <strong>Mensaje:</strong> {historialModal.incidente.mensaje_limpio}
+                  <strong>Mensaje:</strong>{historialModal.incidente.mensaje_limpio}
                 </div>
               )}
 
