@@ -1,0 +1,3567 @@
+{
+  "config": {
+    "configFile": "/Users/tommy/Documents/Desarrollo-Tesis/dk-central/playwright.config.js",
+    "rootDir": "/Users/tommy/Documents/Desarrollo-Tesis/dk-central/tests/e2e",
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 2
+    },
+    "preserveOutput": "always",
+    "reporter": [
+      [
+        "list",
+        null
+      ],
+      [
+        "html",
+        {
+          "open": "never"
+        }
+      ],
+      [
+        "json",
+        {
+          "outputFile": "playwright-results.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "quiet": false,
+    "projects": [
+      {
+        "outputDir": "/Users/tommy/Documents/Desarrollo-Tesis/dk-central/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 2
+        },
+        "id": "db-serial",
+        "name": "db-serial",
+        "testDir": "/Users/tommy/Documents/Desarrollo-Tesis/dk-central/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*_api.spec.js",
+          "**/auth_endpoints.spec.js",
+          "**/*_ui.spec.js"
+        ],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "/Users/tommy/Documents/Desarrollo-Tesis/dk-central/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 2
+        },
+        "id": "ui-parallel",
+        "name": "ui-parallel",
+        "testDir": "/Users/tommy/Documents/Desarrollo-Tesis/dk-central/tests/e2e",
+        "testIgnore": [
+          "**/*_api.spec.js",
+          "**/auth_endpoints.spec.js",
+          "**/*_ui.spec.js"
+        ],
+        "testMatch": [
+          "**/*.spec.js"
+        ],
+        "timeout": 30000
+      }
+    ],
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.57.0",
+    "workers": 4,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "auth_endpoints.spec.js",
+      "file": "auth_endpoints.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "HU23 - Endpoints críticos de seguridad (2FA y force-change)",
+          "file": "auth_endpoints.spec.js",
+          "line": 25,
+          "column": 6,
+          "specs": [
+            {
+              "title": "force-change: sin auth_token → 401",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "db-serial",
+                  "projectName": "db-serial",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 735,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-12T04:22:10.798Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "1e03bd6d3d6079bd375f-4426c67455e70a8a78b7",
+              "file": "auth_endpoints.spec.js",
+              "line": 69,
+              "column": 3
+            },
+            {
+              "title": "force-change: password débil → 400",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "db-serial",
+                  "projectName": "db-serial",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 52,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-12T04:22:11.851Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "1e03bd6d3d6079bd375f-4dd6384158d20033f0c2",
+              "file": "auth_endpoints.spec.js",
+              "line": 77,
+              "column": 3
+            },
+            {
+              "title": "force-change: password válida → 200 y flag actualizado",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "db-serial",
+                  "projectName": "db-serial",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 842,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-12T04:22:11.915Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "1e03bd6d3d6079bd375f-f85c40f083c166a35d06",
+              "file": "auth_endpoints.spec.js",
+              "line": 95,
+              "column": 3
+            },
+            {
+              "title": "2fa/setup: sin cookie → 401",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "db-serial",
+                  "projectName": "db-serial",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 3510,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-12T04:22:12.779Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "1e03bd6d3d6079bd375f-ea82b1de808134c21798",
+              "file": "auth_endpoints.spec.js",
+              "line": 123,
+              "column": 3
+            },
+            {
+              "title": "2fa/setup: devuelve QR cuando no hay token",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "db-serial",
+                  "projectName": "db-serial",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 298,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-12T04:22:16.314Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "1e03bd6d3d6079bd375f-c2a01a1c781ce954221c",
+              "file": "auth_endpoints.spec.js",
+              "line": 128,
+              "column": 3
+            },
+            {
+              "title": "2fa/setup: token válido → activa 2FA",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "db-serial",
+                  "projectName": "db-serial",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 38,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-12T04:22:16.637Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "1e03bd6d3d6079bd375f-45630af74a40ebdd3ae6",
+              "file": "auth_endpoints.spec.js",
+              "line": 142,
+              "column": 3
+            },
+            {
+              "title": "2fa/setup: ya activado → mensaje informativo",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "db-serial",
+                  "projectName": "db-serial",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 51,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-12T04:22:16.700Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "1e03bd6d3d6079bd375f-9ca73d548443545ae68a",
+              "file": "auth_endpoints.spec.js",
+              "line": 172,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "centros_comerciales_api.spec.js",
+      "file": "centros_comerciales_api.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "HU23 - Centros Comerciales (API)",
+          "file": "centros_comerciales_api.spec.js",
+          "line": 9,
+          "column": 6,
+          "specs": [
+            {
+              "title": "GET /api/centros-comerciales: requiere admin_sistema",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "db-serial",
+                  "projectName": "db-serial",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 355,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-12T04:22:16.832Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "7fd09c9f6d5032f038d0-7fda2c5e204aa80de86c",
+              "file": "centros_comerciales_api.spec.js",
+              "line": 102,
+              "column": 3
+            },
+            {
+              "title": "GET /api/centros-comerciales: filtra por ciudad (search)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "db-serial",
+                  "projectName": "db-serial",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 23,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-12T04:22:17.250Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "7fd09c9f6d5032f038d0-2aebf8bc434393d754b2",
+              "file": "centros_comerciales_api.spec.js",
+              "line": 112,
+              "column": 3
+            },
+            {
+              "title": "POST /api/centros-comerciales: valida campos obligatorios",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "db-serial",
+                  "projectName": "db-serial",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 22,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-12T04:22:17.280Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "7fd09c9f6d5032f038d0-aca51c1e26e6d9ce3eb7",
+              "file": "centros_comerciales_api.spec.js",
+              "line": 128,
+              "column": 3
+            },
+            {
+              "title": "POST /api/centros-comerciales: valida formato id_grupo_telegram (POST)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "db-serial",
+                  "projectName": "db-serial",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 37,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-12T04:22:17.315Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "7fd09c9f6d5032f038d0-e4975667c89f5b2ec2ee",
+              "file": "centros_comerciales_api.spec.js",
+              "line": 144,
+              "column": 3
+            },
+            {
+              "title": "POST /api/centros-comerciales: crea centro y bloquea duplicado por nombre",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "db-serial",
+                  "projectName": "db-serial",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 60,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-12T04:22:17.363Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "7fd09c9f6d5032f038d0-1904e6acf6cac0a48fb6",
+              "file": "centros_comerciales_api.spec.js",
+              "line": 165,
+              "column": 3
+            },
+            {
+              "title": "PUT /api/centros-comerciales/:id valida formato id_grupo_telegram (PUT)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "db-serial",
+                  "projectName": "db-serial",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1126,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-12T04:22:17.431Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "7fd09c9f6d5032f038d0-62d8c8929cf9f4361515",
+              "file": "centros_comerciales_api.spec.js",
+              "line": 207,
+              "column": 3
+            },
+            {
+              "title": "DELETE /api/centros-comerciales/:id elimina",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "db-serial",
+                  "projectName": "db-serial",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 619,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-12T04:22:18.565Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "7fd09c9f6d5032f038d0-b1f903117ee1db6fe188",
+              "file": "centros_comerciales_api.spec.js",
+              "line": 231,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "centros_comerciales_ui.spec.js",
+      "file": "centros_comerciales_ui.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "HU23 - Centros Comerciales (UI mínima)",
+          "file": "centros_comerciales_ui.spec.js",
+          "line": 33,
+          "column": 6,
+          "specs": [
+            {
+              "title": "Solo admin_sistema: admin_centro NO debe poder usar/operar la pantalla",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "db-serial",
+                  "projectName": "db-serial",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 2093,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-12T04:22:19.239Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "af42711d1641e9df8bb3-7e320beb20483a9abc26",
+              "file": "centros_comerciales_ui.spec.js",
+              "line": 129,
+              "column": 3
+            },
+            {
+              "title": "Admin sistema: puede buscar por ciudad y ver resultados",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "db-serial",
+                  "projectName": "db-serial",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 2697,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-12T04:22:21.892Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "af42711d1641e9df8bb3-3ff9ff6c887807671b1e",
+              "file": "centros_comerciales_ui.spec.js",
+              "line": 151,
+              "column": 3
+            },
+            {
+              "title": "Admin sistema: puede crear y eliminar centro con modal confirmación",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "db-serial",
+                  "projectName": "db-serial",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 4550,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-12T04:22:24.596Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "af42711d1641e9df8bb3-2a357b79154dd27db284",
+              "file": "centros_comerciales_ui.spec.js",
+              "line": 166,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "dashboards_api.spec.js",
+      "file": "dashboards_api.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "HU23 - Dashboards (API)",
+          "file": "dashboards_api.spec.js",
+          "line": 14,
+          "column": 6,
+          "specs": [
+            {
+              "title": "GET /api/dashboard: valida fecha obligatoria",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "db-serial",
+                  "projectName": "db-serial",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1139,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-12T04:22:29.216Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "302f024dedd95e55c285-5a204b96119ff0842735",
+              "file": "dashboards_api.spec.js",
+              "line": 262,
+              "column": 3
+            },
+            {
+              "title": "GET /api/dashboard: rango > 7 días -> 400",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "db-serial",
+                  "projectName": "db-serial",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 733,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-12T04:22:30.550Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "302f024dedd95e55c285-7585ea03f3720e36057f",
+              "file": "dashboards_api.spec.js",
+              "line": 272,
+              "column": 3
+            },
+            {
+              "title": "Admin sistema: sin filtros centro/area -> total excluye 'otros' y agrega ambos centros",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "db-serial",
+                  "projectName": "db-serial",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 99,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-12T04:22:31.312Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "302f024dedd95e55c285-467207e2cdd92c56f0ad",
+              "file": "dashboards_api.spec.js",
+              "line": 283,
+              "column": 3
+            },
+            {
+              "title": "Admin sistema: filtro centro=centro1 -> total solo centro1 (excluye 'otros')",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "db-serial",
+                  "projectName": "db-serial",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 86,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-12T04:22:31.431Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "302f024dedd95e55c285-e688ece7e5224ae7f9fc",
+              "file": "dashboards_api.spec.js",
+              "line": 317,
+              "column": 3
+            },
+            {
+              "title": "Admin centro: ignora centro query y restringe a su centro",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "db-serial",
+                  "projectName": "db-serial",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 24,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-12T04:22:31.527Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "302f024dedd95e55c285-d40eab88f51fa234d9a4",
+              "file": "dashboards_api.spec.js",
+              "line": 332,
+              "column": 3
+            },
+            {
+              "title": "Usuario operativo: restringe a su centro + su área (seguridad)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "db-serial",
+                  "projectName": "db-serial",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 33,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-12T04:22:31.558Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "302f024dedd95e55c285-b507d61bde4a3e918005",
+              "file": "dashboards_api.spec.js",
+              "line": 345,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "dashboards_ui.spec.js",
+      "file": "dashboards_ui.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "HU23 - Dashboards (UI mínima)",
+          "file": "dashboards_ui.spec.js",
+          "line": 40,
+          "column": 6,
+          "specs": [
+            {
+              "title": "Admin sistema: ve filtros Centro Comercial y Área",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "db-serial",
+                  "projectName": "db-serial",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 4749,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-12T04:22:31.632Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "90def7d31f2ed227e149-5846ca9738cb576f21bf",
+              "file": "dashboards_ui.spec.js",
+              "line": 287,
+              "column": 3
+            },
+            {
+              "title": "Admin centro: NO ve Centro Comercial, SÍ ve Área",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "db-serial",
+                  "projectName": "db-serial",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 2792,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-12T04:22:36.448Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "90def7d31f2ed227e149-7e731fb2229f57ce37c4",
+              "file": "dashboards_ui.spec.js",
+              "line": 298,
+              "column": 3
+            },
+            {
+              "title": "Usuario operativo: NO ve Centro Comercial, NO ve Área, y puede filtrar dashboard",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "db-serial",
+                  "projectName": "db-serial",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1737,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-12T04:22:39.247Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "90def7d31f2ed227e149-09209bd79a0daac78da1",
+              "file": "dashboards_ui.spec.js",
+              "line": 309,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "incidentes_api.spec.js",
+      "file": "incidentes_api.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "HU23 - Incidentes (API) - ISO/IEC 25010 Security + Functional correctness",
+          "file": "incidentes_api.spec.js",
+          "line": 24,
+          "column": 6,
+          "specs": [
+            {
+              "title": "GET /api/incidentes: sin auth_token → 401/redirect (depende authorize)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "db-serial",
+                  "projectName": "db-serial",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 383,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-12T04:22:41.020Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "4351db2b065b536b9379-759a8722154284070f4a",
+              "file": "incidentes_api.spec.js",
+              "line": 322,
+              "column": 3
+            },
+            {
+              "title": "GET /api/incidentes: filtrar por estado sin fecha → 400 y mensaje",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "db-serial",
+                  "projectName": "db-serial",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 15,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-12T04:22:41.503Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "4351db2b065b536b9379-fc0089b293df7a8310a8",
+              "file": "incidentes_api.spec.js",
+              "line": 328,
+              "column": 3
+            },
+            {
+              "title": "GET /api/incidentes: sin filtros → retorna SOLO HOY y excluye 'otros'",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "db-serial",
+                  "projectName": "db-serial",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 33,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-12T04:22:41.527Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "4351db2b065b536b9379-caab947f4e1c588a5399",
+              "file": "incidentes_api.spec.js",
+              "line": 344,
+              "column": 3
+            },
+            {
+              "title": "GET /api/incidentes: admin_sistema puede filtrar por centro+fecha",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "db-serial",
+                  "projectName": "db-serial",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 23,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-12T04:22:41.566Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "4351db2b065b536b9379-99893642f55a760db2cd",
+              "file": "incidentes_api.spec.js",
+              "line": 369,
+              "column": 3
+            },
+            {
+              "title": "GET /api/incidentes: admin_centro NO puede ver otro centro (aunque mande centro=otro)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "db-serial",
+                  "projectName": "db-serial",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 14,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-12T04:22:41.596Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "4351db2b065b536b9379-03578dc682fa5ff07bec",
+              "file": "incidentes_api.spec.js",
+              "line": 391,
+              "column": 3
+            },
+            {
+              "title": "GET /api/incidentes: usuario_operativo SOLO su centro + su área (ignora filtro area)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "db-serial",
+                  "projectName": "db-serial",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 25,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-12T04:22:41.616Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "4351db2b065b536b9379-0c66f85528817a949092",
+              "file": "incidentes_api.spec.js",
+              "line": 414,
+              "column": 3
+            },
+            {
+              "title": "PUT /api/incidentes/:id: admin_sistema → 403/401 (solo usuario_operativo)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "db-serial",
+                  "projectName": "db-serial",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 806,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-12T04:22:41.647Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "4351db2b065b536b9379-290b99f44969302a7e5f",
+              "file": "incidentes_api.spec.js",
+              "line": 442,
+              "column": 3
+            },
+            {
+              "title": "PUT /api/incidentes/:id: operativo de otro centro → 403",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "db-serial",
+                  "projectName": "db-serial",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 184,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-12T04:22:42.462Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "4351db2b065b536b9379-a207e9febd57187553fb",
+              "file": "incidentes_api.spec.js",
+              "line": 460,
+              "column": 3
+            },
+            {
+              "title": "PUT /api/incidentes/:id: no permitir editar completado → 400",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "db-serial",
+                  "projectName": "db-serial",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 57,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-12T04:22:42.657Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "4351db2b065b536b9379-33152d7526cb40c397a6",
+              "file": "incidentes_api.spec.js",
+              "line": 480,
+              "column": 3
+            },
+            {
+              "title": "PUT /api/incidentes/:id: en_proceso → nuevo (regresión) → 400",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "db-serial",
+                  "projectName": "db-serial",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 49,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-12T04:22:42.726Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "4351db2b065b536b9379-d9fa7be0b3efbb42e344",
+              "file": "incidentes_api.spec.js",
+              "line": 502,
+              "column": 3
+            },
+            {
+              "title": "PUT /api/incidentes/:id: si está NUEVO y se guarda observación → pasa a EN_PROCESO + crea historial",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "db-serial",
+                  "projectName": "db-serial",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 35,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-12T04:22:42.784Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "4351db2b065b536b9379-3c179d08874352664d4a",
+              "file": "incidentes_api.spec.js",
+              "line": 534,
+              "column": 3
+            },
+            {
+              "title": "GET /api/incidentes/:id/historial: admin_sistema puede ver",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "db-serial",
+                  "projectName": "db-serial",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 850,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-12T04:22:42.825Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "4351db2b065b536b9379-b583489aaac88c16f25b",
+              "file": "incidentes_api.spec.js",
+              "line": 576,
+              "column": 3
+            },
+            {
+              "title": "GET /api/incidentes/:id/historial: admin_centro no puede ver otro centro → 403",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "db-serial",
+                  "projectName": "db-serial",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 15,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-12T04:22:43.681Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "4351db2b065b536b9379-be7221889ca284f0f472",
+              "file": "incidentes_api.spec.js",
+              "line": 592,
+              "column": 3
+            },
+            {
+              "title": "GET /api/incidentes/:id/historial: operativo solo su centro+área → 403 si área no coincide",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "db-serial",
+                  "projectName": "db-serial",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 19,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-12T04:22:43.703Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "4351db2b065b536b9379-7dc041807165f6bbaeca",
+              "file": "incidentes_api.spec.js",
+              "line": 607,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "incidentes_ui.spec.js",
+      "file": "incidentes_ui.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "HU23 - Incidentes (UI mínima)",
+          "file": "incidentes_ui.spec.js",
+          "line": 38,
+          "column": 6,
+          "specs": [
+            {
+              "title": "Admin sistema: ve filtro Centro Comercial",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "db-serial",
+                  "projectName": "db-serial",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1428,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-12T04:22:43.770Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "1d993af77bb97809526c-e37332e222c0f2877cad",
+              "file": "incidentes_ui.spec.js",
+              "line": 198,
+              "column": 3
+            },
+            {
+              "title": "Usuario operativo: NO ve filtro Área y puede abrir historial",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "db-serial",
+                  "projectName": "db-serial",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1486,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-12T04:22:45.242Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "1d993af77bb97809526c-46fc6b6d282259c76dcd",
+              "file": "incidentes_ui.spec.js",
+              "line": 209,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "mensajes_api.spec.js",
+      "file": "mensajes_api.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "HU23 - Mensajes Limpios + Clasificados AUTO (API)",
+          "file": "mensajes_api.spec.js",
+          "line": 10,
+          "column": 6,
+          "specs": [
+            {
+              "title": "POST /api/mensajes-limpios: sin x-api-key -> 401",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "db-serial",
+                  "projectName": "db-serial",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 435,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-12T04:22:46.766Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "dd2423662a9ce2a085a7-6372e9614904edffa57f",
+              "file": "mensajes_api.spec.js",
+              "line": 72,
+              "column": 3
+            },
+            {
+              "title": "POST /api/mensajes-limpios: faltan campos obligatorios -> 400",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "db-serial",
+                  "projectName": "db-serial",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 14,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-12T04:22:47.231Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "dd2423662a9ce2a085a7-026f1552f9a490431b61",
+              "file": "mensajes_api.spec.js",
+              "line": 91,
+              "column": 3
+            },
+            {
+              "title": "POST /api/mensajes-limpios: crea mensaje (aunque clasificación falle) -> 200 + procesado=false",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "db-serial",
+                  "projectName": "db-serial",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1651,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-12T04:22:47.249Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "dd2423662a9ce2a085a7-c522462974daa768e7f1",
+              "file": "mensajes_api.spec.js",
+              "line": 107,
+              "column": 3
+            },
+            {
+              "title": "POST /api/mensajes-limpios: duplicado sin procesar -> 200 (mensaje informativo)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "db-serial",
+                  "projectName": "db-serial",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 235,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-12T04:22:48.907Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "dd2423662a9ce2a085a7-ca4ccbf3bc19ecc1923a",
+              "file": "mensajes_api.spec.js",
+              "line": 142,
+              "column": 3
+            },
+            {
+              "title": "POST /api/mensajes-limpios: duplicado procesado + con clasificación -> 200 (ya registrado y clasificado)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "db-serial",
+                  "projectName": "db-serial",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 22,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-12T04:22:49.155Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "dd2423662a9ce2a085a7-a3bc4ef7f8388820b999",
+              "file": "mensajes_api.spec.js",
+              "line": 185,
+              "column": 3
+            },
+            {
+              "title": "POST /api/mensajes-clasificados/auto: sin x-api-key -> 401",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "db-serial",
+                  "projectName": "db-serial",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 18,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-12T04:22:49.185Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "dd2423662a9ce2a085a7-cb839b127931cc7ec970",
+              "file": "mensajes_api.spec.js",
+              "line": 229,
+              "column": 3
+            },
+            {
+              "title": "POST /api/mensajes-clasificados/auto: id_mensaje_limpio requerido -> 400",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "db-serial",
+                  "projectName": "db-serial",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 17,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-12T04:22:49.209Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "dd2423662a9ce2a085a7-802ec1278b301b78ebe3",
+              "file": "mensajes_api.spec.js",
+              "line": 241,
+              "column": 3
+            },
+            {
+              "title": "POST /api/mensajes-clasificados/auto: mensaje no encontrado -> 404",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "db-serial",
+                  "projectName": "db-serial",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 18,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-12T04:22:49.232Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "dd2423662a9ce2a085a7-a3632523503fdd7e4bfe",
+              "file": "mensajes_api.spec.js",
+              "line": 254,
+              "column": 3
+            },
+            {
+              "title": "POST /api/mensajes-clasificados/auto: ya clasificado pero procesado=0 -> 200 y corrige procesado=1",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "db-serial",
+                  "projectName": "db-serial",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 29,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-12T04:22:49.257Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "dd2423662a9ce2a085a7-36809d7778db784d461f",
+              "file": "mensajes_api.spec.js",
+              "line": 267,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "mensajes_ui.spec.js",
+      "file": "mensajes_ui.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "HU23 - Mensajes (UI mínima / seguridad desde cliente)",
+          "file": "mensajes_ui.spec.js",
+          "line": 7,
+          "column": 6,
+          "specs": [
+            {
+              "title": "Cliente no autorizado: POST /api/mensajes-limpios sin x-api-key -> 401",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "db-serial",
+                  "projectName": "db-serial",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 39,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-12T04:22:49.315Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "3040cf441f2e490d4fbf-61ff728929a0cd7ea3aa",
+              "file": "mensajes_ui.spec.js",
+              "line": 8,
+              "column": 3
+            },
+            {
+              "title": "Cliente autorizado pero payload inválido: POST /api/mensajes-limpios -> 400",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "db-serial",
+                  "projectName": "db-serial",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 24,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-12T04:22:49.360Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "3040cf441f2e490d4fbf-8d4ada27d59572e33d1b",
+              "file": "mensajes_ui.spec.js",
+              "line": 25,
+              "column": 3
+            },
+            {
+              "title": "Cliente no autorizado: POST /api/mensajes-clasificados/auto sin x-api-key -> 401",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "db-serial",
+                  "projectName": "db-serial",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 15,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-12T04:22:49.390Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "3040cf441f2e490d4fbf-8ef2124e4d874777ccd3",
+              "file": "mensajes_ui.spec.js",
+              "line": 38,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "reportes_api.spec.js",
+      "file": "reportes_api.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "HU23 - Reportes (API) - ISO/IEC 25010 Security + Functional correctness",
+          "file": "reportes_api.spec.js",
+          "line": 20,
+          "column": 6,
+          "specs": [
+            {
+              "title": "GET /api/reportes: sin auth_token → no 200 (depende authorize)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "db-serial",
+                  "projectName": "db-serial",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 905,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-12T04:22:49.421Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "7d41b01142bdcbee7cb0-56e560c645d5fd59c815",
+              "file": "reportes_api.spec.js",
+              "line": 235,
+              "column": 3
+            },
+            {
+              "title": "GET /api/reportes: falta fecha_inicio o fecha_fin → 400",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "db-serial",
+                  "projectName": "db-serial",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 18,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-12T04:22:50.391Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "7d41b01142bdcbee7cb0-27d03b36598253a7a015",
+              "file": "reportes_api.spec.js",
+              "line": 240,
+              "column": 3
+            },
+            {
+              "title": "GET /api/reportes: fecha_fin < fecha_inicio → 400",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "db-serial",
+                  "projectName": "db-serial",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 23,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-12T04:22:50.426Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "7d41b01142bdcbee7cb0-44ca773043f51e5d3cc6",
+              "file": "reportes_api.spec.js",
+              "line": 256,
+              "column": 3
+            },
+            {
+              "title": "GET /api/reportes: rango > 7 días → 400",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "db-serial",
+                  "projectName": "db-serial",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 12,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-12T04:22:50.466Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "7d41b01142bdcbee7cb0-ad5b929bfcdf4787aec7",
+              "file": "reportes_api.spec.js",
+              "line": 272,
+              "column": 3
+            },
+            {
+              "title": "admin_sistema: puede filtrar por centro + área (respeta filtros)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "db-serial",
+                  "projectName": "db-serial",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 33,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-12T04:22:50.499Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "7d41b01142bdcbee7cb0-bef59ada345094b98de4",
+              "file": "reportes_api.spec.js",
+              "line": 292,
+              "column": 3
+            },
+            {
+              "title": "admin_centro: ignora centro enviado y fuerza su centro",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "db-serial",
+                  "projectName": "db-serial",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 16,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-12T04:22:50.538Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "7d41b01142bdcbee7cb0-4d0f57d112ac6f54620a",
+              "file": "reportes_api.spec.js",
+              "line": 329,
+              "column": 3
+            },
+            {
+              "title": "usuario_operativo: ignora area enviada y fuerza su área",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "db-serial",
+                  "projectName": "db-serial",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 14,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-12T04:22:50.560Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "7d41b01142bdcbee7cb0-0aae9dabf8200ba78e64",
+              "file": "reportes_api.spec.js",
+              "line": 358,
+              "column": 3
+            },
+            {
+              "title": "sin registros en rango: devuelve rows/detalleTipos vacíos + resumen",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "db-serial",
+                  "projectName": "db-serial",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 16,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-12T04:22:50.580Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "7d41b01142bdcbee7cb0-ded27baf76f596785034",
+              "file": "reportes_api.spec.js",
+              "line": 391,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "reportes_ui.spec.js",
+      "file": "reportes_ui.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "HU23 - Reportes (UI mínima)",
+          "file": "reportes_ui.spec.js",
+          "line": 40,
+          "column": 6,
+          "specs": [
+            {
+              "title": "Admin sistema: ve filtro Centro Comercial y Área",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "db-serial",
+                  "projectName": "db-serial",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1539,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-12T04:22:50.635Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "69bd5e71140692860b83-5febe1dc05186756249d",
+              "file": "reportes_ui.spec.js",
+              "line": 270,
+              "column": 3
+            },
+            {
+              "title": "Admin centro: NO ve Centro Comercial, SÍ ve Área",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "db-serial",
+                  "projectName": "db-serial",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 918,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-12T04:22:52.217Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "69bd5e71140692860b83-7a1c9c15b211bfa2315a",
+              "file": "reportes_ui.spec.js",
+              "line": 281,
+              "column": 3
+            },
+            {
+              "title": "Usuario operativo: NO ve Centro Comercial, NO ve Área, y puede generar reporte",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "db-serial",
+                  "projectName": "db-serial",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1410,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-12T04:22:53.141Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "69bd5e71140692860b83-62fe2ac50db61d811968",
+              "file": "reportes_ui.spec.js",
+              "line": 292,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "resumenes_diarios_api.spec.js",
+      "file": "resumenes_diarios_api.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "HU23 - Resúmenes diarios (API)",
+          "file": "resumenes_diarios_api.spec.js",
+          "line": 20,
+          "column": 6,
+          "specs": [
+            {
+              "title": "POST /api/resumen-diario: sin auth_token → 401/redirect",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "db-serial",
+                  "projectName": "db-serial",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 749,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-12T04:22:54.581Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "bddefb8873b636c8e7c4-d56f2e540f5ac96a7c1f",
+              "file": "resumenes_diarios_api.spec.js",
+              "line": 229,
+              "column": 3
+            },
+            {
+              "title": "POST /api/resumen-diario: falta fecha → 400",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "db-serial",
+                  "projectName": "db-serial",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 11,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-12T04:22:55.384Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "bddefb8873b636c8e7c4-18b0a28a88557851a3fc",
+              "file": "resumenes_diarios_api.spec.js",
+              "line": 236,
+              "column": 3
+            },
+            {
+              "title": "usuario_operativo: POST devuelve resumen guardado (no editable)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "db-serial",
+                  "projectName": "db-serial",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 13,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-12T04:22:55.401Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "bddefb8873b636c8e7c4-86f25515774f7857e004",
+              "file": "resumenes_diarios_api.spec.js",
+              "line": 253,
+              "column": 3
+            },
+            {
+              "title": "usuario_operativo: PUT NO puede sobreescribir si ya existe",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "db-serial",
+                  "projectName": "db-serial",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 13,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-12T04:22:55.420Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "bddefb8873b636c8e7c4-a23003f9aae5b06c0a6e",
+              "file": "resumenes_diarios_api.spec.js",
+              "line": 275,
+              "column": 3
+            },
+            {
+              "title": "admin_centro: POST con área específica devuelve resumen guardado y editable:true",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "db-serial",
+                  "projectName": "db-serial",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 22,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-12T04:22:55.440Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "bddefb8873b636c8e7c4-eb703bfdf79b961cd7bf",
+              "file": "resumenes_diarios_api.spec.js",
+              "line": 297,
+              "column": 3
+            },
+            {
+              "title": "admin_centro: PUT puede actualizar resumen existente",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "db-serial",
+                  "projectName": "db-serial",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 19,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-12T04:22:55.469Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "bddefb8873b636c8e7c4-45fa1355e47864875e13",
+              "file": "resumenes_diarios_api.spec.js",
+              "line": 318,
+              "column": 3
+            },
+            {
+              "title": "admin_sistema: POST resumen general (sin centro/area) → 400 por faltantes (sin IA)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "db-serial",
+                  "projectName": "db-serial",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 23,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-12T04:22:55.493Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "bddefb8873b636c8e7c4-9ded05c2ee93c6269a1d",
+              "file": "resumenes_diarios_api.spec.js",
+              "line": 354,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "resumenes_diarios_ui.spec.js",
+      "file": "resumenes_diarios_ui.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "HU23 - Resúmenes diarios (UI mínima)",
+          "file": "resumenes_diarios_ui.spec.js",
+          "line": 37,
+          "column": 6,
+          "specs": [
+            {
+              "title": "Admin sistema: ve filtros Centro Comercial y Área y recibe modal de faltantes en resumen general",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "db-serial",
+                  "projectName": "db-serial",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 3926,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-12T04:22:55.549Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "dde29c7f69ebd6133a1a-fd1a49a8f036ee21bca5",
+              "file": "resumenes_diarios_ui.spec.js",
+              "line": 265,
+              "column": 3
+            },
+            {
+              "title": "Usuario operativo: NO ve Centro, NO ve Área; al generar trae resumen guardado y NO puede editar ni guardar",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "db-serial",
+                  "projectName": "db-serial",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 943,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-12T04:22:59.520Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "dde29c7f69ebd6133a1a-be8c659a9d72b925f262",
+              "file": "resumenes_diarios_ui.spec.js",
+              "line": 301,
+              "column": 3
+            },
+            {
+              "title": "Admin centro: NO ve Centro, SÍ ve Área; al generar resumen guardado puede editar y guardar",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "db-serial",
+                  "projectName": "db-serial",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1898,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-12T04:23:00.468Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "dde29c7f69ebd6133a1a-9e30abf2bdfdba2f82b0",
+              "file": "resumenes_diarios_ui.spec.js",
+              "line": 332,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "usuarios_api.spec.js",
+      "file": "usuarios_api.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "HU23 - Usuarios (API)",
+          "file": "usuarios_api.spec.js",
+          "line": 9,
+          "column": 6,
+          "specs": [
+            {
+              "title": "Operativo NO puede listar usuarios (403/401)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "db-serial",
+                  "projectName": "db-serial",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 689,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-12T04:23:02.436Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "be408c38b0a7bedbc0f4-d3e115991d7a98407441",
+              "file": "usuarios_api.spec.js",
+              "line": 118,
+              "column": 3
+            },
+            {
+              "title": "Admin sistema: GET lista usuarios (200)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "db-serial",
+                  "projectName": "db-serial",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 25,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-12T04:23:03.152Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "be408c38b0a7bedbc0f4-2d5d6a2f0ad47fb1c40b",
+              "file": "usuarios_api.spec.js",
+              "line": 126,
+              "column": 3
+            },
+            {
+              "title": "Admin centro: GET solo ve usuarios_operativo de su centro",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "db-serial",
+                  "projectName": "db-serial",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 14,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-12T04:23:03.182Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "be408c38b0a7bedbc0f4-ed113d0ea6810cd67419",
+              "file": "usuarios_api.spec.js",
+              "line": 137,
+              "column": 3
+            },
+            {
+              "title": "Admin sistema: puede crear usuario_operativo en centro2",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "db-serial",
+                  "projectName": "db-serial",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1584,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-12T04:23:03.207Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "be408c38b0a7bedbc0f4-8065842f9b629c6ef744",
+              "file": "usuarios_api.spec.js",
+              "line": 152,
+              "column": 3
+            },
+            {
+              "title": "Admin centro: puede crear usuario_operativo SOLO en su centro",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "db-serial",
+                  "projectName": "db-serial",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1522,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-12T04:23:04.798Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "be408c38b0a7bedbc0f4-d841a6126b88fee7ef05",
+              "file": "usuarios_api.spec.js",
+              "line": 179,
+              "column": 3
+            },
+            {
+              "title": "Admin centro: NO debe poder crear admin_sistema/admin_centro (esperado 403/400)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "db-serial",
+                  "projectName": "db-serial",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 40,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-12T04:23:06.330Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "be408c38b0a7bedbc0f4-c1df468886d0b9acb6f9",
+              "file": "usuarios_api.spec.js",
+              "line": 206,
+              "column": 3
+            },
+            {
+              "title": "Admin centro: NO puede editar usuario de otro centro (403)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "db-serial",
+                  "projectName": "db-serial",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 2539,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-12T04:23:06.381Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "be408c38b0a7bedbc0f4-2c673ae865f3e8a848d2",
+              "file": "usuarios_api.spec.js",
+              "line": 231,
+              "column": 3
+            },
+            {
+              "title": "Admin sistema: puede eliminar usuario",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "db-serial",
+                  "projectName": "db-serial",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1711,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-12T04:23:08.926Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "be408c38b0a7bedbc0f4-3646f02948a31d8e7696",
+              "file": "usuarios_api.spec.js",
+              "line": 277,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "usuarios_ui.spec.js",
+      "file": "usuarios_ui.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "HU23 - Usuarios (UI mínima)",
+          "file": "usuarios_ui.spec.js",
+          "line": 41,
+          "column": 6,
+          "specs": [
+            {
+              "title": "Admin sistema: puede abrir modal y ve Centro Comercial + Rol",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "db-serial",
+                  "projectName": "db-serial",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 2300,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-12T04:23:10.679Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "8b758330136fb11838db-3880dd0b34fc6f6202f8",
+              "file": "usuarios_ui.spec.js",
+              "line": 151,
+              "column": 3
+            },
+            {
+              "title": "Admin centro: abre modal y NO ve Centro Comercial ni Rol; crea usuario operativo en su centro",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "db-serial",
+                  "projectName": "db-serial",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 3153,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-12T04:23:13.025Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "8b758330136fb11838db-499c71b66ad6bdb1e0c6",
+              "file": "usuarios_ui.spec.js",
+              "line": 181,
+              "column": 3
+            },
+            {
+              "title": "Admin centro: en tabla NO ve usuarios de otros centros; y puede eliminar con modal confirmación",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "db-serial",
+                  "projectName": "db-serial",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 3766,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-12T04:23:16.186Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "8b758330136fb11838db-4589dbf6f55be40160bd",
+              "file": "usuarios_ui.spec.js",
+              "line": 232,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "auth_roles.spec.js",
+      "file": "auth_roles.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "HU23 - Autenticación y Roles (middleware)",
+          "file": "auth_roles.spec.js",
+          "line": 23,
+          "column": 6,
+          "specs": [
+            {
+              "title": "Sin sesión: /dashboard/* redirige a /login",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "ui-parallel",
+                  "projectName": "ui-parallel",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 6383,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-12T04:22:10.668Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "5f6830d941849671684b-7232713d86611adba479",
+              "file": "auth_roles.spec.js",
+              "line": 24,
+              "column": 3
+            },
+            {
+              "title": "Admin sistema: si intenta entrar a admin-centro → redirige a admin-sistema",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "ui-parallel",
+                  "projectName": "ui-parallel",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 2010,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-12T04:22:17.930Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "5f6830d941849671684b-6791afac11a206a7b0b3",
+              "file": "auth_roles.spec.js",
+              "line": 29,
+              "column": 3
+            },
+            {
+              "title": "Admin sistema: si intenta entrar a usuario-operativo → redirige a admin-sistema",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "ui-parallel",
+                  "projectName": "ui-parallel",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 1928,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-12T04:22:19.955Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "5f6830d941849671684b-8bcf74bf51d776b97763",
+              "file": "auth_roles.spec.js",
+              "line": 39,
+              "column": 3
+            },
+            {
+              "title": "Admin centro: permite /dashboard/incidentes",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "ui-parallel",
+                  "projectName": "ui-parallel",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 1467,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-12T04:22:21.891Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "5f6830d941849671684b-1ee6f6fee226fbe152c9",
+              "file": "auth_roles.spec.js",
+              "line": 49,
+              "column": 3
+            },
+            {
+              "title": "Admin centro: bloquea /dashboard/admin-sistema → redirige a /dashboard/admin-centro",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "ui-parallel",
+                  "projectName": "ui-parallel",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 1484,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-12T04:22:23.364Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "5f6830d941849671684b-e48769745fa29f8fc9c2",
+              "file": "auth_roles.spec.js",
+              "line": 59,
+              "column": 3
+            },
+            {
+              "title": "Usuario operativo: permite /dashboard/reportes",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "ui-parallel",
+                  "projectName": "ui-parallel",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 2241,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-12T04:22:24.858Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "5f6830d941849671684b-8a04dce122ca339173fd",
+              "file": "auth_roles.spec.js",
+              "line": 69,
+              "column": 3
+            },
+            {
+              "title": "Usuario operativo: bloquea /dashboard/usuarios → redirige a /dashboard/usuario-operativo",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "ui-parallel",
+                  "projectName": "ui-parallel",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 2802,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-12T04:22:27.110Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "5f6830d941849671684b-f235c322e101641f2705",
+              "file": "auth_roles.spec.js",
+              "line": 79,
+              "column": 3
+            },
+            {
+              "title": "must_change_password=true: bloquea rutas y fuerza a dashboard de rol",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "ui-parallel",
+                  "projectName": "ui-parallel",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 2306,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-12T04:22:29.923Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "5f6830d941849671684b-3207afcc05b9e34e583b",
+              "file": "auth_roles.spec.js",
+              "line": 89,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-01-12T04:22:10.062Z",
+    "duration": 70027.248,
+    "expected": 94,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}

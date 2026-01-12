@@ -29,6 +29,14 @@ export async function PUT(req, { params }) {
   // 🔒 Validación contraseña segura
   const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9])[^\s]{8,}$/;
 
+  // ✅ REGLA HU: admin_centro NO puede cambiar rol a admin_* (ni poner admin a nadie)
+  if (session.rol === "admin_centro" && rol !== "usuario_operativo") {
+    return NextResponse.json(
+      { message: "No autorizado para asignar este rol." },
+      { status: 400 }
+    );
+  }
+
   if (!nombre || !correo || !telefono || !usuario || !rol) {
     return NextResponse.json(
       { message: "Campos obligatorios faltantes" },

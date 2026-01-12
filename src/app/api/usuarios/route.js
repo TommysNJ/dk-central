@@ -60,6 +60,14 @@ export async function POST(req) {
     nombre_centro_comercial,
   } = data;
 
+  // ✅ REGLA HU: admin_centro solo puede crear usuarios operativos
+  if (session.rol === "admin_centro" && rol !== "usuario_operativo") {
+    return NextResponse.json(
+      { message: "No autorizado para crear este tipo de usuario." },
+      { status: 400 }
+    );
+  }
+
   if (!nombre || !correo || !telefono || !usuario || !password || !rol) {
     return NextResponse.json(
       { message: "Campos obligatorios faltantes" },
