@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
 // Clave para autorizar al microservicio
-const BOT_API_KEY = process.env.BOT_API_KEY || "CLAVE_SEGURA_DE_AUTENTICACION";
+const BOT_API_KEY = process.env.BOT_API_KEY;
 
 export async function GET(req) {
   const apiKey = req.headers.get("x-api-key");

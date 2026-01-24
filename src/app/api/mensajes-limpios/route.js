@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
 // 🔐 Misma clave que usa el microservicio Python
-const BOT_API_KEY = process.env.BOT_API_KEY || "CLAVE_SEGURA_DE_AUTENTICACION";
+const BOT_API_KEY = process.env.BOT_API_KEY;
 
 export async function POST(req) {
   const apiKey = req.headers.get("x-api-key");

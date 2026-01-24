@@ -3,7 +3,7 @@ import { prisma } from "@/lib/prisma";
 import path from "path";
 import { spawn } from "child_process";
 
-const BOT_API_KEY = process.env.BOT_API_KEY || "CLAVE_SEGURA_DE_AUTENTICACION";
+const BOT_API_KEY = process.env.BOT_API_KEY;
 
 // ✅ FastAPI “warm” en otro puerto (NO 127.0.0.1)
 const PY_CLASSIFIER_URL =
