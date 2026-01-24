@@ -1,7 +1,7 @@
 // lib/jwt.js
 import jwt from 'jsonwebtoken';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'dev_secret_change_me';
+const JWT_SECRET = process.env.JWT_SECRET;
 const TOKEN_TTL = '8h';
 
 export function signAuthToken(payload) {
