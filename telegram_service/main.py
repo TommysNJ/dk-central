@@ -48,7 +48,7 @@ async def procesar_grupo(grupo_id, id_centro):
             log(f"⚠️ No se pudo acceder al grupo {grupo_id_num}: {e}")
             return
 
-        async for message in client.iter_messages(entity, limit=10):
+        async for message in client.iter_messages(entity, limit=100):
             if not message.text:
                 continue
 

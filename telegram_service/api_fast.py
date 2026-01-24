@@ -1,18 +1,29 @@
 # telegram_service/api_fast.py
 import os
 import json
-from fastapi import FastAPI
+from fastapi import FastAPI, Header
 from pydantic import BaseModel
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
 import torch
 import torch.nn.functional as F
 
 # =========================
-# Misma config que tu script
+# Cargar configuración (igual que main.py)
 # =========================
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+CONFIG_PATH = os.path.join(BASE_DIR, "config.json")
+with open(CONFIG_PATH, "r", encoding="utf-8") as f:
+    config = json.load(f)
+
+BOT_API_KEY = config.get("bot_api_key")
+
+# =========================
+# Modelo y labels
+# =========================
 MODEL_DIR = os.path.join(BASE_DIR, "entrenamiento", "modelo_beto")
 LABELS_PATH = os.path.join(BASE_DIR, "entrenamiento", "labels.json")
+
 
 def load_labels():
     """
@@ -23,11 +34,13 @@ def load_labels():
     # Convertir a minúsculas para uniformidad
     return [str(x).lower() for x in labels]
 
+
 def load_model():
     tokenizer = AutoTokenizer.from_pretrained(MODEL_DIR)
     model = AutoModelForSequenceClassification.from_pretrained(MODEL_DIR)
     model.eval()
     return tokenizer, model
+
 
 def classify(text, tokenizer, model, labels):
     """
@@ -42,6 +55,7 @@ def classify(text, tokenizer, model, labels):
     incidente = labels[pred.item()]
     return incidente, float(conf.item())
 
+
 # =========================
 # FastAPI
 # =========================
@@ -51,15 +65,36 @@ app = FastAPI()
 LABELS = load_labels()
 TOKENIZER, MODEL = load_model()
 
+
 class ClasificarRequest(BaseModel):
     contenido_limpio: str = ""
 
+
+def validar_api_key(x_api_key: str | None):
+    """
+    Valida la clave compartida (igual concepto que webhook_server.py / main.py).
+    """
+    if not BOT_API_KEY:
+        # Si no está configurada, se considera mala configuración del servicio.
+        # (Evita dejar el servicio abierto sin querer)
+        return False
+
+    return x_api_key == BOT_API_KEY
+
+
 @app.get("/health")
-def health():
+def health(x_api_key: str | None = Header(default=None)):
+    if not validar_api_key(x_api_key):
+        return {"ok": False, "message": "No autorizado"}
+
     return {"ok": True}
 
+
 @app.post("/clasificar")
-def clasificar(req: ClasificarRequest):
+def clasificar(req: ClasificarRequest, x_api_key: str | None = Header(default=None)):
+    if not validar_api_key(x_api_key):
+        return {"incidente": None, "confianza": 0.0, "message": "No autorizado"}
+
     try:
         texto = (req.contenido_limpio or "").strip()
 

@@ -91,7 +91,10 @@ export async function POST(req) {
     try {
       const r = await fetch(PY_CLASSIFIER_URL, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": BOT_API_KEY, // 🔐 CLAVE COMPARTIDA
+        },
         body: JSON.stringify({ contenido_limpio: payload.contenido_limpio }),
       });
 
