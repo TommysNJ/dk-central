@@ -9,9 +9,7 @@ const BOT_API_KEY = process.env.BOT_API_KEY;
 const PY_CLASSIFIER_URL =
   process.env.PY_CLASSIFIER_URL;
 
-const PYTHON_PATH =
-  process.env.PYTHON_PATH ||
-  "/Users/tommy/Documents/Desarrollo-Tesis/dk-central/telegram_service/venv/bin/python";
+const PYTHON_PATH = process.env.PYTHON_PATH;
 
 export async function POST(req) {
   const apiKey = req.headers.get("x-api-key");
