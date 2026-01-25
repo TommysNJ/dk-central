@@ -48,6 +48,10 @@ export default function AdminSistemaHome() {
     // ✅ libera navegación
     setShowModal(false);
     window.removeEventListener("popstate", preventBack);
+
+    // ✅ NUEVO: cerrar sesión y volver a login para emitir JWT nuevo
+    await fetch("/api/auth/logout", { method: "POST" });
+    window.location.href = "/login";
   }
 
   return (
