@@ -32,8 +32,6 @@ async def procesar_grupo(grupo_id, id_centro):
     """
     try:
         grupo_id_str = str(grupo_id).strip()
-        if grupo_id_str.startswith("-"):
-            grupo_id_str = grupo_id_str.lstrip("-")
 
         try:
             grupo_id_num = int(grupo_id_str)
@@ -48,7 +46,7 @@ async def procesar_grupo(grupo_id, id_centro):
             log(f"⚠️ No se pudo acceder al grupo {grupo_id_num}: {e}")
             return
 
-        async for message in client.iter_messages(entity, limit=120):
+        async for message in client.iter_messages(entity, limit=10):
             if not message.text:
                 continue
 
@@ -84,7 +82,7 @@ async def handler(event):
     Captura mensajes nuevos en tiempo real desde los grupos registrados.
     """
     try:
-        chat_id = str(event.chat_id).lstrip("-")
+        chat_id = str(event.chat_id)
         if chat_id not in grupos_centros:
             # Si el grupo no está en el diccionario, lo ignoramos
             return
@@ -123,6 +121,18 @@ async def main():
     Ahora además se queda escuchando mensajes nuevos indefinidamente.
     """
     await client.start()
+    
+    
+    # ✅ (1) Debug: confirma cuenta
+    me = await client.get_me()
+    log(f"👤 Logueado como {me.id} / @{me.username}")
+
+    # ✅ (2) Calentar sesión: llena cache de entidades (diálogos)
+    try:
+        await client.get_dialogs(limit=None)
+        log("✅ Diálogos cargados (cache de entidades listo).")
+    except Exception as e:
+        log(f"⚠️ No se pudieron cargar diálogos: {e}")
 
     try:
         centros = obtener_centros(backend_url, bot_api_key)
@@ -141,7 +151,7 @@ async def main():
                         log("⚠️ Webhook sin id_centro_comercial o id_grupo_telegram. Se ignora.")
                         return
 
-                    grupo_id_str = str(grupo_id).lstrip("-")
+                    grupo_id_str = str(grupo_id)
 
                     if action == "created":
                         grupos_centros[grupo_id_str] = id_centro
@@ -150,7 +160,7 @@ async def main():
 
                     elif action == "updated":
                         if old_grupo_id:
-                            old_str = str(old_grupo_id).lstrip("-")
+                            old_str = str(old_grupo_id)
                             if grupos_centros.get(old_str) == id_centro:
                                 grupos_centros.pop(old_str, None)
 
@@ -185,7 +195,7 @@ async def main():
 
         # Mapear IDs de grupo con su centro comercial
         for c in centros:
-            grupo_id_str = str(c["id_grupo_telegram"]).lstrip("-")
+            grupo_id_str = str(c["id_grupo_telegram"])
             grupos_centros[grupo_id_str] = c["id_centro_comercial"]
 
         # Procesar mensajes históricos (como antes)
@@ -204,7 +214,7 @@ async def main():
                     log("⚠️ Webhook sin id_centro_comercial o id_grupo_telegram. Se ignora.")
                     return
 
-                grupo_id_str = str(grupo_id).lstrip("-")
+                grupo_id_str = str(grupo_id)
 
                 if action == "created":
                     grupos_centros[grupo_id_str] = id_centro
@@ -215,7 +225,7 @@ async def main():
                 elif action == "updated":
                     # Si cambió el ID de grupo, limpiamos el viejo
                     if old_grupo_id:
-                        old_str = str(old_grupo_id).lstrip("-")
+                        old_str = str(old_grupo_id)
                         if grupos_centros.get(old_str) == id_centro:
                             grupos_centros.pop(old_str, None)
 
